@@ -68,6 +68,7 @@ export const CartProvider = ({ children }) => {
           brand: product.brand,
           category: product.category,
           price: product.price,
+          productImagePath: product.productImagePath,
           discountPrice: product.discountPrice,
           effectivePrice,
           stock: product.stock,
