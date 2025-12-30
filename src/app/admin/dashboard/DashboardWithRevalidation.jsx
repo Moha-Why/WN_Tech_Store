@@ -370,27 +370,27 @@ function AddProduct() {
       alert(error.message)
     } else {
       alert("Product added successfully")
-      // setForm({
-      //   name: "",
-      //   brand: "",
-      //   category: "phone",
-      //   price: "",
-      //   discountPrice: "",
-      //   stock: "",
-      //   isAvailable: true,
-      //   description: "",
-      //   productImagePath: "",
-      //   thumbnail: "",
-      //   rating: "",
-      //   cpu: "",
-      //   ram: "",
-      //   storage: "",
-      //   gpu: "",
-      //   screenSize: "",
-      //   battery: "",
-      //   camera: "",
-      //   os: "",
-      //   })
+      setForm({
+        name: "",
+        brand: "",
+        category: "phone",
+        price: "",
+        discountPrice: "",
+        stock: "",
+        isAvailable: true,
+        description: "",
+        productImagePath: "",
+        thumbnail: "",
+        rating: "",
+        cpu: "",
+        ram: "",
+        storage: "",
+        gpu: "",
+        screenSize: "",
+        battery: "",
+        camera: "",
+        os: "",
+        })
     }
   }
 
