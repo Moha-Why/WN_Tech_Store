@@ -148,14 +148,14 @@ export default function Cart() {
                         transition: { duration: 0.2 }
                       }}
                     >
-                      <div className="p-5 flex gap-5">
-                        <div className="relative w-32 h-32 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
+                      <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-5">
+                        <div className="relative w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
                           <Image
                             src={item.productImagePath}
                             alt={item.name}
                             fill
                             className="object-cover"
-                            sizes="128px"
+                            sizes="(max-width: 640px) 100vw, 128px"
                             onError={(e) => {
                               e.currentTarget.src = '/fallback.png';
                             }}
@@ -169,24 +169,24 @@ export default function Cart() {
 
                         <div className="flex-1 flex flex-col justify-between">
                           <div>
-                            <div className="flex items-start justify-between mb-2">
-                              <div>
-                                <h3 className="text-lg font-semibold text-[var(--color-text-primary)] mb-1">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+                              <div className="flex-1">
+                                <h3 className="text-base sm:text-lg font-semibold text-[var(--color-text-primary)] mb-1">
                                   {item.name}
                                 </h3>
                                 <p className="text-sm text-[var(--color-text-secondary)] font-medium">
                                   {item.brand}
                                 </p>
                               </div>
-                              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${stockStatus.bg} ${stockStatus.color}`}>
+                              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${stockStatus.bg} ${stockStatus.color} w-fit`}>
                                 {stockStatus.label}
                               </span>
                             </div>
 
-                            <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-[var(--color-text-secondary)] mb-3">
+                            <div className="flex flex-wrap gap-x-3 sm:gap-x-4 gap-y-1 text-xs sm:text-sm text-[var(--color-text-secondary)] mb-3">
                               {item.cpu && (
                                 <span className="flex items-center gap-1">
-                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
                                   </svg>
                                   {item.cpu}
@@ -198,10 +198,10 @@ export default function Cart() {
                             </div>
                           </div>
 
-                          <div className="flex items-center justify-between">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                             <div className="flex items-baseline gap-2">
                               <motion.span 
-                                className="text-2xl font-bold text-[var(--color-text-primary)]"
+                                className="text-xl sm:text-2xl font-bold text-[var(--color-text-primary)]"
                                 key={item.effectivePrice}
                                 initial={{ scale: 1.1 }}
                                 animate={{ scale: 1 }}
@@ -216,7 +216,7 @@ export default function Cart() {
                               )}
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center justify-between sm:justify-end gap-3">
                               <div className="flex items-center gap-2 bg-[var(--color-bg-muted)] rounded-lg p-1">
                                 <motion.button
                                   onClick={() => decreaseQuantity(item.id)}
@@ -265,14 +265,14 @@ export default function Cart() {
                           </div>
 
                           <motion.div 
-                            className="mt-2 pt-2 border-t border-[var(--color-border)] text-right"
+                            className="mt-3 pt-3 border-t border-[var(--color-border)] flex justify-between items-center"
                             key={`subtotal-${item.id}-${item.quantity}`}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ duration: 0.3 }}
                           >
-                            <span className="text-sm text-[var(--color-text-secondary)]">Subtotal: </span>
-                            <span className="text-lg font-bold text-[var(--color-text-primary)]">
+                            <span className="text-sm text-[var(--color-text-secondary)]">Subtotal:</span>
+                            <span className="text-base sm:text-lg font-bold text-[var(--color-text-primary)]">
                               {(item.effectivePrice * item.quantity).toLocaleString()} LE
                             </span>
                           </motion.div>
