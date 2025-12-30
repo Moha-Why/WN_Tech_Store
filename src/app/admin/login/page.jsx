@@ -4,7 +4,7 @@ import { useState } from "react"
 import { supabase } from "@/src/lib/supabaseClient"
 import { motion } from "framer-motion"
 import { FiPackage } from "react-icons/fi"
-import { useRouter } from "next/router"
+import { useRouter } from "next/navigation"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
