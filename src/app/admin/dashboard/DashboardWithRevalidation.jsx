@@ -339,16 +339,15 @@ function AddProduct() {
     .from('product-images')
     .upload(files.fileName, files.file)
     if (imgError) { alert(imgError.message); setLoading(false); return; }
+    
     const path = data.path
-    const { data: img, error: URLErorr } = supabase.storage
+    const { data: imger } = supabase.storage
     .from('product-images')
     .getPublicUrl(path)
-    if (URLErorr) { alert(imgError.message); setLoading(false); return; }
-   
-    update("productImagePath", img.publicUrl)
 
     const payload = {
       ...form,
+      productImagePath: imger.publicUrl,
       price: Number(form.price),
       discountPrice: form.discountPrice ? Number(form.discountPrice) : null,
       stock: Number(form.stock),
@@ -371,27 +370,27 @@ function AddProduct() {
       alert(error.message)
     } else {
       alert("Product added successfully")
-      setForm({
-        name: "",
-        brand: "",
-        category: "phone",
-        price: "",
-        discountPrice: "",
-        stock: "",
-        isAvailable: true,
-        description: "",
-        productImagePath: "",
-        thumbnail: "",
-        rating: "",
-        cpu: "",
-        ram: "",
-        storage: "",
-        gpu: "",
-        screenSize: "",
-        battery: "",
-        camera: "",
-        os: "",
-        })
+      // setForm({
+      //   name: "",
+      //   brand: "",
+      //   category: "phone",
+      //   price: "",
+      //   discountPrice: "",
+      //   stock: "",
+      //   isAvailable: true,
+      //   description: "",
+      //   productImagePath: "",
+      //   thumbnail: "",
+      //   rating: "",
+      //   cpu: "",
+      //   ram: "",
+      //   storage: "",
+      //   gpu: "",
+      //   screenSize: "",
+      //   battery: "",
+      //   camera: "",
+      //   os: "",
+      //   })
     }
   }
 
