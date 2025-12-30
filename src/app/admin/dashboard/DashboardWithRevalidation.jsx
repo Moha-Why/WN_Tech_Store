@@ -165,11 +165,11 @@ export default function AdminDashboard() {
     return () => subscription.unsubscribe()
   }, [])
 
-  // useEffect(() => {
-  //   if (!user) {
-  //     router.replace("/admin/login")
-  //   }
-  // }, [user])
+  useEffect(() => {
+    if (!user) {
+      router.replace("/admin/login")
+    }
+  }, [user])
 
   const signOut = async () => {
     await supabase.auth.signOut()
