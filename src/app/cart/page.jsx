@@ -151,7 +151,7 @@ export default function Cart() {
                       <div className="p-5 flex gap-5">
                         <div className="relative w-32 h-32 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
                           <Image
-                            src={item.thumbnail || "/fallback.png"}
+                            src={item.productImagePath || "/fallback.png"}
                             alt={item.name}
                             fill
                             className="object-cover"

@@ -164,7 +164,7 @@ export default function AdminDashboard() {
   }, [])
 
   useEffect(() => {
-    if (user === null && !loading) {
+    if (!user) {
       router.replace("/admin/login")
     }
   }, [user])
@@ -344,10 +344,10 @@ function AddProduct() {
     const path = data.path
     const { data: img, error: URLErorr } = supabase.storage
     .from('product-images')
-    .createSignedUrl(path, 3600)
+    .getPublicUrl(path)
     if (URLErorr) { alert(imgError.message); setLoading(false); return; }
    
-    update("productImagePath", img.signedUrl)
+    update("productImagePath", img.publicUrl)
 
     const payload = {
       ...form,

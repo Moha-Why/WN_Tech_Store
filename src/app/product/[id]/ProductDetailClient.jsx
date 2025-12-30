@@ -95,7 +95,7 @@ export default function ProductDetailClient({
           >
             <div className="bg-[var(--color-surface)] rounded-2xl overflow-hidden aspect-square relative border border-[var(--color-border)]">
               <Image
-                src={product.thumbnail}
+                src={product.productImagePath}
                 alt={product.name}
                 fill
                 className="object-contain p-8"

@@ -220,7 +220,7 @@ export default function TechStore() {
                   {/* Image */}
                   <div className="relative h-80 bg-[var(--color-bg-muted)] overflow-hidden">
                     <Image
-                      src={product.thumbnail}
+                      src={product.productImagePath}
                       alt={product.name}
                       fill
                       className="
@@ -478,7 +478,7 @@ export default function TechStore() {
                 >
                   <div className="relative overflow-hidden bg-slate-50 h-80">
                     <Image
-                      src={hoveredId === product.id && product.productImagePath ? product.thumbnail : product.thumbnail}
+                      src={product.productImagePath}
                       alt={product.name}
                       fill
                       className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
