@@ -207,7 +207,7 @@ export default function Navbar() {
             transition={{ duration: 0.6, delay: 0.7 }}
             className="text-lg sm:text-xl md:text-2xl text-slate-200 max-w-2xl"
           >
-            Discover the latest smartphones and laptops
+            Discover the latest most powerful laptops
           </motion.p>
         </motion.div>
       </motion.section>
