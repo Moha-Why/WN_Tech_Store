@@ -344,10 +344,10 @@ function AddProduct() {
     const path = data.path
     const { data: img, error: URLErorr } = supabase.storage
     .from('product-images')
-    .getPublicUrl(path)
+    .createSignedUrl(path, 3600)
     if (URLErorr) { alert(imgError.message); setLoading(false); return; }
    
-    update("productImagePath", img.publicUrl)
+    update("productImagePath", img.signedUrl)
 
     const payload = {
       ...form,
