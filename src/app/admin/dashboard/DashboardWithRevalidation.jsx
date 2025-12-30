@@ -150,9 +150,6 @@ export default function AdminDashboard() {
   }
 
   useEffect(() => {
-    if (user === null) {
-      router.replace("/admin/login")
-    }
     getUser()
 
     const {
