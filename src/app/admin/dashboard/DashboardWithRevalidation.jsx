@@ -165,7 +165,7 @@ export default function AdminDashboard() {
     if (user === null && !loading) {
       router.replace("/admin/login")
     }
-  }, [user])
+  }, [user, loading, router])
 
   const signOut = async () => {
     await supabase.auth.signOut()
