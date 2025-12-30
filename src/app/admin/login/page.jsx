@@ -1,3 +1,5 @@
+"use client"
+
 import { useState } from "react"
 import { supabase } from "@/src/lib/supabaseClient"
 import { motion } from "framer-motion"
