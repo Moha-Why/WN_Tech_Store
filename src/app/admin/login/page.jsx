@@ -4,11 +4,13 @@ import { useState } from "react"
 import { supabase } from "@/src/lib/supabaseClient"
 import { motion } from "framer-motion"
 import { FiPackage } from "react-icons/fi"
+import { useRouter } from "next/router"
 
 export default function SignIn() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
   
 
   const signIn = async () => {
@@ -18,7 +20,11 @@ export default function SignIn() {
       password,
     })
     setLoading(false)
-    if (error) alert(error.message)
+    if (error) {
+      alert(error.message)
+      return
+    }
+    router.replace("/admin/dashboard")
   }
 
   return (
