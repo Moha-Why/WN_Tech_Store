@@ -21,13 +21,7 @@ const itemVariants = {
 }
 
 const categories = [
-  {
-    key: "phone",
-    name: "Smartphones",
-    image: "/phones.jpg",
-    description: "Latest mobile devices"
-  },
-  {
+{
     key: "laptop",
     name: "Laptops",
     image: "/laptops.jpg",
@@ -288,7 +282,7 @@ export default function TechStore() {
         <motion.div variants={containerVariants} className="mb-12">
           <h2 className="text-3xl font-bold text-slate-900 text-center mb-8">Shop by Category</h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 gap-6 max-w-4xl mx-auto">
             {categories.map((category) => (
               <motion.div
                 key={category.key}

@@ -77,9 +77,9 @@ export default async function Home() {
  * Enhanced Metadata for SEO
  */
 export const metadata = {
-  title: "Wn Store - Latest Fashion Collection",
-  description: "Shop the latest collection of elegant dresses, casual styles & chic outfits. High-quality fabrics, affordable prices & fast delivery in Egypt.",
-  keywords: "fashion, dresses, casual wear, bags, online shopping, Egypt, women clothing",
+  title: "Wn Store - Laptops for Every Need",
+  description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
+  keywords: "laptops, gaming laptops, ultrabooks, notebook, online shopping, Egypt",
   authors: [{ name: "Wn Store" }],
   creator: "Wn Store",
   publisher: "Wn Store",
@@ -99,29 +99,30 @@ export const metadata = {
     locale: "en_US",
     url: "https://wn-store.vercel.app",
     siteName: "Wn Store",
-    title: "Wn Store - Latest Fashion Collection",
-    description: "Shop the latest collection of elegant dresses, casual styles & chic outfits.",
+    title: "Wn Store - Laptops for Every Need",
+    description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image-laptops.jpg", // replace with laptop-related OG image
         width: 1200,
         height: 630,
-        alt: "Wn Store Fashion Collection",
+        alt: "Wn Store Laptops Collection",
         type: "image/jpeg"
       }
     ]
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wn Store - Latest Fashion Collection",
-    description: "Shop the latest collection of elegant dresses, casual styles & chic outfits.",
-    images: ["/og-image.jpg"],
+    title: "Wn Store - Laptops for Every Need",
+    description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
+    images: ["/og-image-laptops.jpg"],
     creator: "@wnstore"
   },
   alternates: {
     canonical: "https://wn-store.vercel.app"
   }
 }
+
 
 /**
  * ✅ FIXED: Build Configuration for Vercel

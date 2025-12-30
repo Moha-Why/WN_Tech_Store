@@ -2,6 +2,7 @@
 import ProductDetailClient from './ProductDetailClient.jsx'
 import { supabase } from '@/src/lib/supabaseClient'
 import { notFound } from 'next/navigation'
+import { Suspense } from 'react'
 
 async function getProductById(id) {
   const { data, error } = await supabase
@@ -54,11 +55,13 @@ export default async function ProductDetailPage({ params }) {
 
     return (
       <div className="min-h-screen pt-16 bg-[var(--color-bg)]">
+        <Suspense fallback={<div className="text-center py-20 text-[var(--color-text-muted)]">Loading product details...</div>}>
         <ProductDetailClient 
           productId={id} 
           initialProduct={product}
           initialRelatedProducts={relatedProducts}
         />
+        </Suspense>
       </div>
     )
     
@@ -97,7 +100,7 @@ export async function generateMetadata({ params }) {
         siteName: 'WN Store',
         images: [
           {
-            url: product.thumbnail,
+            url: product.prodctImagePath,
             width: 800,
             height: 800,
             alt: product.name

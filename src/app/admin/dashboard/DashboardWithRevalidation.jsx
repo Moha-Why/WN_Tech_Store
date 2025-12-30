@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useHardwareData } from "@/src/components/useHardwareData"
 import {
   FiBox,
   FiTrash2,
@@ -36,85 +37,21 @@ const cardVariants = {
   visible: { opacity: 1, scale: 1 },
 }
 
-const PHONE_SPECS = {
-  cpu: [
-    "Apple A18 Pro",
-    "Apple A17 Pro",
-    "Apple A16 Bionic",
-    "Snapdragon 8 Gen 3",
-    "Snapdragon 8 Gen 2",
-    "Google Tensor G4",
-    "Google Tensor G3",
-    "MediaTek Dimensity 9300",
-    "Exynos 2400",
-  ],
-  ram: ["4GB", "6GB", "8GB", "12GB", "16GB", "18GB"],
-  storage: ["64GB", "128GB", "256GB", "512GB", "1TB", "2TB"],
-  screenSize: [
-    "5.4 inches",
-    "6.1 inches",
-    "6.3 inches",
-    "6.5 inches",
-    "6.7 inches",
-    "6.8 inches",
-    "6.9 inches",
-  ],
-  battery: ["3000mAh", "3500mAh", "4000mAh", "4500mAh", "5000mAh", "5500mAh", "6000mAh"],
-  camera: [
-    "12MP Single",
-    "48MP Main",
-    "50MP Main",
-    "64MP Main",
-    "108MP Main",
-    "200MP Main",
-    "Triple 12MP",
-    "Triple 50MP",
-    "Quad 50MP",
-  ],
-  os: [
-    "iOS 18",
-    "iOS 17",
-    "Android 15",
-    "Android 14",
-    "One UI 6.1",
-    "ColorOS 14",
-    "MIUI 15",
-  ],
-}
-
 const LAPTOP_SPECS = {
-  cpu: [
-    "Apple M4",
-    "Apple M3 Pro",
-    "Apple M3 Max",
-    "Apple M3",
-    "Intel Core i9-14th Gen",
-    "Intel Core i7-14th Gen",
-    "Intel Core i5-14th Gen",
-    "AMD Ryzen 9 7945HX",
-    "AMD Ryzen 7 7840HS",
-    "AMD Ryzen 5 7640HS",
-  ],
-  ram: ["8GB", "16GB", "24GB", "32GB", "64GB", "96GB", "128GB"],
+  ram: ["4GB", "8GB", "16GB", "24GB", "32GB"],
   storage: [
     "256GB SSD",
     "512GB SSD",
     "1TB SSD",
     "2TB SSD",
     "4TB SSD",
-    "8TB SSD",
-  ],
-  gpu: [
-    "Integrated Graphics",
-    "Intel Iris Xe",
-    "NVIDIA RTX 4050",
-    "NVIDIA RTX 4060",
-    "NVIDIA RTX 4070",
-    "NVIDIA RTX 4080",
-    "NVIDIA RTX 4090",
-    "AMD Radeon RX 7600M XT",
-    "AMD Radeon RX 7700S",
-    "AMD Radeon RX 7900M",
+    "8TB SSD",    
+    // "256GB HDD",
+    // "512GB HDD",
+    // "1TB HDD",
+    // "2TB HDD",
+    // "4TB HDD",
+    // "8TB HDD",
   ],
   screenSize: [
     "13.3 inches",
@@ -283,7 +220,18 @@ function AddProduct() {
     os: "",
   })
 
-  const specs = form.category === "phone" ? PHONE_SPECS : LAPTOP_SPECS
+  const { cpuList, gpuList, isLoadingCPU, isLoadingGPU } = useHardwareData();
+  // const [formTwo, setForm] = useState({
+  //   cpu: "",
+  //   gpu: "",
+  //   // ... other form fields
+  // });
+
+  // const updateSpec = (field, value) => {
+  //   setForm(prev => ({ ...prev, [field]: value }));
+  // };
+
+  const specs = form.category === "phone" ? LAPTOP_SPECS : LAPTOP_SPECS
 
   const update = (key, value) => setForm((f) => ({ ...f, [key]: value }))
 
@@ -441,7 +389,6 @@ function AddProduct() {
                 }))
               }}
             >
-              <option value="phone">Phone</option>
               <option value="laptop">Laptop</option>
             </select>
           </motion.div>
@@ -586,7 +533,7 @@ function AddProduct() {
               Technical Specifications
             </h2>
             <div className="space-y-3">
-              <select
+              {/* <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
                 value={form.cpu}
                 onChange={(e) => updateSpec("cpu", e.target.value)}
@@ -597,7 +544,7 @@ function AddProduct() {
                     {cpu}
                   </option>
                 ))}
-              </select>
+              </select> */}
 
               <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
@@ -624,21 +571,31 @@ function AddProduct() {
                   </option>
                 ))}
               </select>
+              <div>
+                {/* <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                  CPU / Processor
+                </label> */}
+                <SearchableSelect
+                  value={form.cpu}
+                  onChange={(value) => updateSpec("cpu", value)}
+                  options={cpuList}
+                  placeholder="Select CPU / Processor"
+                  isLoading={isLoadingCPU}
+                />
+              </div>
 
-              {form.category === "laptop" && (
-                <select
-                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
+              <div>
+                {/* <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                  GPU / Graphics
+                </label> */}
+                <SearchableSelect
                   value={form.gpu}
-                  onChange={(e) => updateSpec("gpu", e.target.value)}
-                >
-                  <option value="">Select GPU / Graphics</option>
-                  {specs.gpu.map((gpu) => (
-                    <option key={gpu} value={gpu}>
-                      {gpu}
-                    </option>
-                  ))}
-                </select>
-              )}
+                  onChange={(value) => updateSpec("gpu", value)}
+                  options={gpuList}
+                  placeholder="Select GPU / Graphics"
+                  isLoading={isLoadingGPU}
+                />
+              </div>
 
               <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
@@ -665,21 +622,6 @@ function AddProduct() {
                   </option>
                 ))}
               </select>
-
-              {form.category === "phone" && (
-                <select
-                  className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
-                  value={form.camera}
-                  onChange={(e) => updateSpec("camera", e.target.value)}
-                >
-                  <option value="">Select Camera</option>
-                  {specs.camera.map((camera) => (
-                    <option key={camera} value={camera}>
-                      {camera}
-                    </option>
-                  ))}
-                </select>
-              )}
 
               <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
@@ -890,4 +832,136 @@ function ManageProducts() {
     </motion.div>
   )
 }
+
+
+
+const SearchableSelect = ({ 
+  value, 
+  onChange, 
+  options, 
+  placeholder, 
+  isLoading 
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const containerRef = useRef(null);
+
+  const filteredOptions = options.filter((option) =>
+    option.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (containerRef.current && !containerRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelect = (option) => {
+    onChange(option);
+    setIsOpen(false);
+    setSearchTerm("");
+  };
+
+  return (
+    <div className="relative" ref={containerRef}>
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all text-left flex items-center justify-between"
+      >
+        <span className={value ? "text-[var(--color-text-primary)]" : "text-blue-950"}>
+          {value || placeholder}
+        </span>
+        <svg
+          className={`w-5 h-5 text-[var(--color-text-muted)] transition-transform ${
+            isOpen ? "rotate-180" : ""
+          }`}
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="absolute z-50 w-full mt-2 bg-[var(--color-card)] border border-[var(--color-border)] rounded-lg shadow-lg overflow-hidden"
+          >
+            <div className="p-2 border-b border-[var(--color-border)]">
+              <div className="relative">
+                <svg
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-text-muted)]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+                <input
+                  type="text"
+                  placeholder="Search..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
+                  autoFocus
+                />
+              </div>
+            </div>
+
+            <div className="max-h-60 overflow-y-auto">
+              {isLoading ? (
+                <div className="px-4 py-8 text-center text-[var(--color-text-muted)]">
+                  <svg className="animate-spin w-6 h-6 mx-auto mb-2" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Loading...
+                </div>
+              ) : filteredOptions.length === 0 ? (
+                <div className="px-4 py-8 text-center text-[var(--color-text-muted)]">
+                  No results found
+                </div>
+              ) : (
+                filteredOptions.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    className={`w-full px-4 py-2.5 text-left text-sm hover:bg-[var(--color-bg-muted)] transition-colors ${
+                      value === option
+                        ? "bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-medium"
+                        : "text-[var(--color-text-primary)]"
+                    }`}
+                  >
+                    {option}
+                  </button>
+                ))
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
