@@ -289,7 +289,7 @@ export default function CheckoutPage() {
                     >
                       <div className="relative w-16 h-16 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
                         <Image
-                          src={item.productImagePath"}
+                          src={item.productImagePath}
                           alt={item.name}
                           fill
                           className="object-cover"
