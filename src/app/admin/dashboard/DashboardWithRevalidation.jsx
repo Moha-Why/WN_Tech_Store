@@ -170,7 +170,6 @@ export default function AdminDashboard() {
   
   if (!user) {
     router.replace('/admin/login')
-    return
   }
 
   return (
