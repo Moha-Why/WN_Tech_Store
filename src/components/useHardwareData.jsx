@@ -27,7 +27,7 @@ export const useHardwareData = () => {
     const fetchGPUs = async () => {
       try {
         setIsLoadingGPU(true);
-        const response = await fetch('http://localhost:3000/api/revalidate?type=gpu');
+        const response = await fetch('/api/revalidate?type=gpu');
         const res = await response.json();
         const gpus = res.data
         
