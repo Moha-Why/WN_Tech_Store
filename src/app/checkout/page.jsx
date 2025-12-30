@@ -107,22 +107,37 @@ export default function CheckoutPage() {
     }
 
     try {
-      const orderItems = cart.map((item) => ({
+      const orderItems = cart.map((item) => {
+        return {
         product_id: item.id,
         product_quantity: item.quantity
-      }));
+      }});
 
-      const { error } = await supabase
-        .from("orders")
-        .insert({
-          name,
-          phone,
-          address,
-          items: orderItems,
+      const { error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        name,
+        phone,
+        address,
+        items: orderItems,
+      });
+
+    if (orderError) throw orderError;
+    console.log(cart)
+
+    const stockUpdates = cart.map(async (item) => {
+      const amount = item.stock - item.quantity 
+      const { error: stockError } = await supabase
+        .from("products")
+        .update({ 
+          stock: amount
         })
-        ;
+        .eq("id", Number(item.id));
 
-      if (error) throw error;
+      if (stockError) throw stockError;
+    });
+
+      await Promise.all(stockUpdates);
 
       clearCart();
       router.push("/success");

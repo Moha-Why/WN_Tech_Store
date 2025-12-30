@@ -141,11 +141,18 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const router = useRouter()
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+  async function getUser() {
+    await supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
       setLoading(false)
     })
+
+
+    
+  }
+
+  useEffect(() => {
+    getUser()
 
     const {
       data: { subscription },
@@ -155,6 +162,12 @@ export default function AdminDashboard() {
 
     return () => subscription.unsubscribe()
   }, [])
+
+  useEffect(() => {
+    if (user === null && !loading) {
+      router.replace("/admin/login")
+    }
+  }, [user])
 
   const signOut = async () => {
     await supabase.auth.signOut()
@@ -168,9 +181,6 @@ export default function AdminDashboard() {
     )
   }
   
-  if (!user) {
-    router.replace('/admin/login')
-  }
 
   return (
     <div className="min-h-screen bg-bg">
