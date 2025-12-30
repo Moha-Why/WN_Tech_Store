@@ -146,10 +146,6 @@ export default function AdminDashboard() {
       setUser(session?.user ?? null)
       setLoading(false)
     })
-
-    if (!user) {
-      router.replace("/admin/login")
-    }
     
   }
 
@@ -166,7 +162,7 @@ export default function AdminDashboard() {
   }, [])
 
   useEffect(() => {
-    if (!user) {
+    if (user === null && !loading) {
       router.replace("/admin/login")
     }
   }, [user])
