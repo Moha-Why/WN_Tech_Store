@@ -1,5 +1,5 @@
 import "./globals.css";
-import { MyContextProvider } from "../context/CartContext";
+import {CartProvider}  from "../context/CartContext";
 import { Outfit } from "next/font/google";
 import Footer from "../components/Footer";
 import ClientLayoutWrapper from "./ClientLayoutWrapper";
@@ -22,12 +22,12 @@ export default function RootLayout({ children }) {
       <body className={`${outfit.className} antialiased flex flex-col min-h-screen`}>
         <link rel="icon" href="/favicon.ico" />
         <Analytics />
-        <MyContextProvider>
+        <CartProvider>
           <ClientLayoutWrapper className="flex-grow">
             {children}
           </ClientLayoutWrapper>
           <Footer />
-        </MyContextProvider>
+        </CartProvider>
       </body>
     </html>
   );

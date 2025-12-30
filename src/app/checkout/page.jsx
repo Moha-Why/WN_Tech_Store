@@ -1,58 +1,48 @@
 "use client";
 import { useState } from "react";
-import { useMyContext } from "../../context/CartContext";
+import { useCart } from "../../context/CartContext";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/src/lib/supabaseClient";
+import Image from "next/image";
 
-// Animation variants
 const containerVariants = {
-  hidden: { opacity: 1 }, // ✅ FIXED: إزالة الإخفاء الأولي
+  hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      duration: 0.4,
-      ease: "easeOut",
-      staggerChildren: 0.1
+      staggerChildren: 0.08,
+      delayChildren: 0.1
     }
   }
 };
 
 const formVariants = {
-  hidden: { 
-    opacity: 1, // ✅ FIXED: إزالة الإخفاء الأولي
-    y: 0 // ✅ FIXED: إزالة الحركة الأولية
-  },
+  hidden: { opacity: 0, y: 20 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.5,
-      ease: "easeOut"
+      ease: [0.22, 1, 0.36, 1]
     }
   }
 };
 
-const inputVariants = {
-  hidden: { 
-    opacity: 1, // ✅ FIXED: إزالة الإخفاء الأولي
-    x: 0 // ✅ FIXED: إزالة الحركة الأولية
-  },
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
   visible: {
     opacity: 1,
     x: 0,
     transition: {
       duration: 0.4,
-      ease: "easeOut"
+      ease: [0.22, 1, 0.36, 1]
     }
   }
 };
 
 const errorVariants = {
-  hidden: { 
-    opacity: 0, 
-    y: -10,
-    scale: 0.95
-  },
+  hidden: { opacity: 0, y: -10, scale: 0.95 },
   visible: {
     opacity: 1,
     y: 0,
@@ -72,263 +62,320 @@ const errorVariants = {
   }
 };
 
-const buttonVariants = {
-  hidden: { 
-    opacity: 1, // ✅ FIXED: إزالة الإخفاء الأولي
-    y: 0 // ✅ FIXED: إزالة الحركة الأولية
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut"
-    }
-  },
-  hover: {
-    scale: 1.02,
-    transition: {
-      duration: 0.2,
-      ease: "easeInOut"
-    }
-  },
-  tap: {
-    scale: 0.98
-  }
-};
-
 export default function CheckoutPage() {
-  const { cart, clearCart } = useMyContext();
+  const { cart, clearCart, cartTotal } = useCart();
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
-  const handleSendWhatsApp = () => {
+  const totalSavings = cart.reduce((savings, item) => {
+    if (item.discountPrice && item.price > item.discountPrice) {
+      return savings + ((item.price - item.discountPrice) * item.quantity);
+    }
+    return savings;
+  }, 0);
+
+  const handleSubmit = async () => {
     setErrorMessage("");
+    setIsSubmitting(true);
 
     if (cart.length === 0) {
       setErrorMessage("Your cart is empty. Please add at least one product.");
+      setIsSubmitting(false);
       return;
     }
 
     if (!name || !address || !phone) {
       setErrorMessage("Please fill in all fields.");
+      setIsSubmitting(false);
       return;
     }
 
     if (!phone.startsWith("01")) {
       setErrorMessage("Phone number must start with 01.");
+      setIsSubmitting(false);
       return;
     }
+
     if (phone.length < 11) {
       setErrorMessage("Phone number must be at least 11 digits.");
+      setIsSubmitting(false);
       return;
     }
 
-    let cartDetails = "";
-    let totalAmount = 0;
-    let totalSavings = 0;
+    try {
+      const orderItems = cart.map((item) => ({
+        product_id: item.id,
+        product_quantity: item.quantity
+      }));
 
-    cart.forEach((item) => {
-      // ✅ FIXED: استخدام السعر الصحيح
-      const itemPrice = item.effectivePrice || item.newprice || item.price;
-      const originalPrice = item.price;
-      const itemTotal = itemPrice * item.quantity;
-      const itemSavings = item.newprice ? (originalPrice - item.newprice) * item.quantity : 0;
+      const { error } = await supabase
+        .from("orders")
+        .insert({
+          name,
+          phone,
+          address,
+          items: orderItems,
+        })
+        ;
 
-      cartDetails += `${item.name}\n`;
-      cartDetails += `Quantity: ${item.quantity}\n`;
+      if (error) throw error;
 
-      if (item.selectedColor && item.selectedColor.trim() !== "") {
-        cartDetails += `Color: ${item.selectedColor}\n`;
-      }
-
-      if (item.selectedSize && item.selectedSize.trim() !== "") {
-        cartDetails += `Size: ${item.selectedSize}\n`;
-      }
-
-      // عرض السعر مع الخصم إذا موجود
-      if (item.newprice && item.newprice < originalPrice) {
-        cartDetails += `Price: ${itemPrice} LE (was ${originalPrice} LE) 🔥\n`;
-        cartDetails += `You saved: ${(originalPrice - item.newprice)} LE per item!\n`;
-      } else {
-        cartDetails += `Price: ${itemPrice} LE\n`;
-      }
-      
-      cartDetails += `Subtotal: ${itemTotal.toLocaleString()} LE\n`;
-      cartDetails += "-------------------------\n";
-
-      totalAmount += itemTotal;
-      totalSavings += itemSavings;
-    });
-
-    // إنشاء رسالة WhatsApp
-    let message = `🛍️ *WN Store Order*\n\n`;
-    message += `👤 *Customer Details:*\n`;
-    message += `Name: ${name}\n`;
-    message += `Address: ${address}\n`;
-    message += `Phone: ${phone}\n\n`;
-    message += `🛒 *Order Items:*\n${cartDetails}`;
-    message += `💰 *Order Summary:*\n`;
-    message += `Total Amount: ${totalAmount.toLocaleString()} EGP\n`;
-    
-    if (totalSavings > 0) {
-      message += `🎉 Total Savings: ${totalSavings.toLocaleString()} EGP\n`;
-      message += `💫 Original Total: ${(totalAmount + totalSavings).toLocaleString()} EGP\n`;
+      clearCart();
+      router.push("/success");
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      setErrorMessage("Failed to submit order. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    message += `\n✨ Thank you for choosing WN Store!`;
-
-    const yourWhatsAppNumber = "201211661802";
-    const encodedMessage = encodeURIComponent(message);
-
-    window.open(`https://wa.me/${yourWhatsAppNumber}?text=${encodedMessage}`, "_blank");
-
-    clearCart();
-    router.push("/succses");
   };
 
-  // ✅ FIXED: حساب المجموع الصحيح
-  const total = cart.reduce((acc, item) => {
-    const itemPrice = item.effectivePrice || item.newprice || item.price;
-    return acc + (itemPrice * item.quantity);
-  }, 0);
-
-  const totalSavings = cart.reduce((savings, item) => {
-    if (item.newprice && item.price > item.newprice) {
-      return savings + ((item.price - item.newprice) * item.quantity);
-    }
-    return savings;
-  }, 0);
-
   return (
-    <motion.div 
-      className="max-w-lg min-h-screen mx-auto p-4 justify-center"
+    <motion.div
+      className="min-h-screen bg-[var(--color-bg)] pt-24 pb-16 px-4"
       initial="hidden"
       animate="visible"
       variants={containerVariants}
     >
-      <motion.h1 
-        className="text-2xl font-bold mb-6 text-center"
-        variants={formVariants}
-      >
-        Checkout
-      </motion.h1>
-
-      {/* Order Summary */}
-      {cart.length > 0 && (
-        <motion.div
-          className="bg-gray-50 rounded-lg p-4 mb-6"
+      <div className="max-w-4xl mx-auto">
+        <motion.h1
+          className="text-3xl font-bold text-[var(--color-text-primary)] mb-8"
           variants={formVariants}
         >
-          <h2 className="font-semibold text-gray-900 mb-3">Order Summary</h2>
-          <div className="space-y-2 text-sm">
-            {cart.map((item, index) => {
-              const itemPrice = item.effectivePrice || item.newprice || item.price;
-              return (
-                <div key={index} className="flex justify-between">
-                  <span>{item.name} x{item.quantity}</span>
-                  <span className="font-medium">{(itemPrice * item.quantity).toLocaleString()} LE</span>
+          Checkout
+        </motion.h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <motion.div variants={formVariants}>
+            <div className="bg-[var(--color-card)] rounded-xl border border-[var(--color-border)] p-6">
+              <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-6">
+                Delivery Information
+              </h2>
+
+              <AnimatePresence mode="wait">
+                {errorMessage && (
+                  <motion.div
+                    className="bg-[var(--color-danger)]/10 text-[var(--color-danger)] p-4 rounded-lg mb-6 text-sm flex items-start gap-3"
+                    variants={errorVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                  >
+                    <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                    <span>{errorMessage}</span>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                    Full Name
+                  </label>
+                  <motion.input
+                    type="text"
+                    placeholder="Enter your full name"
+                    className="w-full px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    whileFocus={{ scale: 1.01 }}
+                    required
+                  />
                 </div>
-              );
-            })}
-          </div>
-          <div className="border-t border-gray-200 mt-3 pt-3">
-            {totalSavings > 0 && (
-              <div className="flex justify-between text-green-600 text-sm mb-1">
-                <span>Total Savings:</span>
-                <span>-{totalSavings.toLocaleString()} LE</span>
-              </div>
-            )}
-            <div className="flex justify-between text-lg font-bold">
-              <span>Total:</span>
-              <span>{total.toLocaleString()} LE</span>
+
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                    Phone Number
+                  </label>
+                  <motion.input
+                    type="tel"
+                    placeholder="01xxxxxxxxx"
+                    className="w-full px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    whileFocus={{ scale: 1.01 }}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                    Delivery Address
+                  </label>
+                  <motion.textarea
+                    placeholder="Enter your complete delivery address"
+                    className="w-full px-4 py-3 bg-[var(--color-bg)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all resize-none h-28"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    whileFocus={{ scale: 1.01 }}
+                    required
+                  />
+                </div>
+
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-4 bg-[var(--color-primary)] text-[var(--color-primary-foreground)] rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  whileHover={!isSubmitting ? {
+                    scale: 1.02,
+                    backgroundColor: "var(--color-primary-hover)"
+                  } : {}}
+                  whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                  transition={{ duration: 0.2 }}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+                      </svg>
+                      Processing...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                      Confirm Order
+                    </>
+                  )}
+                </motion.button>
+
+                <p className="text-xs text-[var(--color-text-muted)] text-center">
+                  Your order will be sent to WhatsApp for confirmation and delivery arrangement
+                </p>
+              </form>
             </div>
-          </div>
-        </motion.div>
-      )}
-
-      <AnimatePresence mode="wait">
-        {errorMessage && (
-          <motion.div
-            className="bg-red-100 text-red-700 p-3 rounded-lg mb-4 text-sm"
-            variants={errorVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            layout
-          >
-            ⚠️ {errorMessage}
           </motion.div>
-        )}
-      </AnimatePresence>
 
-      <motion.form onSubmit={(e) => { e.preventDefault(); handleSendWhatsApp(); }} variants={formVariants}>
-        <motion.input
-          type="text"
-          placeholder="Full Name *"
-          className="border border-gray-300 p-3 w-full mb-4 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          variants={inputVariants}
-          whileFocus={{
-            scale: 1.01,
-            borderColor: "#8b5cf6",
-            transition: { duration: 0.2 }
-          }}
-          required
-        />
-        
-        <motion.input
-          type="tel"
-          placeholder="Phone Number (01xxxxxxxxx) *"
-          className="border border-gray-300 p-3 w-full mb-4 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          variants={inputVariants}
-          whileFocus={{
-            scale: 1.01,
-            borderColor: "#8b5cf6",
-            transition: { duration: 0.2 }
-          }}
-          required
-        />
-        
-        <motion.textarea
-          placeholder="Delivery Address *"
-          className="border border-gray-300 p-3 w-full h-24 mb-6 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          variants={inputVariants}
-          whileFocus={{
-            scale: 1.01,
-            borderColor: "#8b5cf6",
-            transition: { duration: 0.2 }
-          }}
-          required
-        />
+          <motion.div variants={formVariants}>
+            <div className="bg-[var(--color-card)] rounded-xl border border-[var(--color-border)] p-6 sticky top-24">
+              <h2 className="text-xl font-semibold text-[var(--color-text-primary)] mb-6">
+                Order Summary
+              </h2>
 
-        <motion.button
-          type="submit"
-          className="w-full bg text-white px-6 py-4 rounded-lg font-semibold text-lg hover:bg-opacity-90 transition-all"
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-        >
-          🚀 Confirm Order via WhatsApp
-        </motion.button>
+              <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
+                <AnimatePresence mode="popLayout">
+                  {cart.map((item) => (
+                    <motion.div
+                      key={item.id}
+                      className="flex gap-4 pb-4 border-b border-[var(--color-border)] last:border-0"
+                      variants={itemVariants}
+                      initial="hidden"
+                      animate="visible"
+                      exit={{ opacity: 0, x: -20 }}
+                      layout
+                    >
+                      <div className="relative w-16 h-16 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
+                        <Image
+                          src={item.thumbnail || "/fallback.png"}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                          sizes="64px"
+                          onError={(e) => {
+                            e.currentTarget.src = '/fallback.png';
+                          }}
+                        />
+                      </div>
 
-        <motion.p
-          className="text-sm text-gray-600 mt-4 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
-          💬 Your order will be sent to WhatsApp for quick confirmation and delivery arrangement.
-        </motion.p>
-      </motion.form>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-semibold text-[var(--color-text-primary)] truncate">
+                          {item.name}
+                        </h3>
+                        <p className="text-xs text-[var(--color-text-secondary)] mb-1">
+                          {item.brand}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-[var(--color-text-muted)]">
+                            Qty: {item.quantity}
+                          </span>
+                          <div className="text-right">
+                            <div className="text-sm font-bold text-[var(--color-text-primary)]">
+                              {(item.effectivePrice * item.quantity).toLocaleString()} LE
+                            </div>
+                            {item.discountPrice && item.discountPrice < item.price && (
+                              <div className="text-xs text-[var(--color-text-muted)] line-through">
+                                {(item.price * item.quantity).toLocaleString()} LE
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </div>
+
+              <div className="space-y-3 pt-4 border-t border-[var(--color-border)]">
+                <div className="flex justify-between text-[var(--color-text-secondary)]">
+                  <span>Subtotal</span>
+                  <span className="font-medium">
+                    {cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toLocaleString()} LE
+                  </span>
+                </div>
+
+                {totalSavings > 0 && (
+                  <motion.div
+                    className="flex justify-between text-[var(--color-success)]"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4 }}
+                  >
+                    <span className="flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clipRule="evenodd"/>
+                      </svg>
+                      You Save
+                    </span>
+                    <span className="font-semibold">
+                      -{totalSavings.toLocaleString()} LE
+                    </span>
+                  </motion.div>
+                )}
+
+                <div className="pt-3 border-t border-[var(--color-border)]">
+                  <div className="flex justify-between items-baseline">
+                    <span className="text-lg font-semibold text-[var(--color-text-primary)]">
+                      Total
+                    </span>
+                    <motion.span
+                      className="text-2xl font-bold text-[var(--color-primary)]"
+                      key={cartTotal}
+                      initial={{ scale: 1.1 }}
+                      animate={{ scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {cartTotal.toLocaleString()} LE
+                    </motion.span>
+                  </div>
+                </div>
+              </div>
+
+              {totalSavings > 0 && (
+                <motion.div
+                  className="mt-4 p-3 bg-[var(--color-success)]/10 rounded-lg"
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                >
+                  <p className="text-sm text-[var(--color-success)] text-center font-medium">
+                    🎉 You're saving {totalSavings.toLocaleString()} LE on this order!
+                  </p>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </motion.div>
   );
 }

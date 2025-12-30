@@ -4,13 +4,10 @@ import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { useCart } from "../context/CartContext";
 
 // Simulated cart context - replace with your actual context
 // left for demonstration purposes
-const useCart = () => {
-  const [cart] = useState([1, 2, 3]); // Demo cart with 3 items
-  return { cart };
-};
 
 const iconVariants = {
   hover: {

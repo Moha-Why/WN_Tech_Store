@@ -1,104 +1,94 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { supabase } from "@/src/lib/supabaseClient";
 
-const MyContext = createContext();
+const CartContext = createContext();
 
-export const MyContextProvider = ({ children }) => {
+export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  const getProducts = async () => {
-    const { data, error } = await supabase.from("products").select("*");
-    if (error) {
-      console.error("Error fetching products:", error);
-      return [];
-    }
-    return data;
-  }
-
-  // استرجاع cart من localStorage أول مرة
   useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) setCart(JSON.parse(storedCart));
+    const storedCart = localStorage.getItem("tech-store-cart");
+    if (storedCart) {
+      try {
+        setCart(JSON.parse(storedCart));
+      } catch (error) {
+        console.error("Error loading cart:", error);
+        localStorage.removeItem("tech-store-cart");
+      }
+    }
+    setIsLoaded(true);
   }, []);
 
-  // حفظ cart في localStorage عند أي تغيير
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+    if (isLoaded) {
+      localStorage.setItem("tech-store-cart", JSON.stringify(cart));
+    }
+  }, [cart, isLoaded]);
 
-  const clearCart = () => {
-    setCart([]);
-    localStorage.removeItem("cart");
-  };
-
-  // ✅ FIXED: إضافة منتج مع حفظ السعر الصحيح (newprice إذا موجود)
-  const addToCart = async (product) => {
-    // جلب البيانات من DB لتأكيد كل التفاصيل (optional)
-    let prod = product;
-    if (!product.pictures) {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*")
-        .eq("id", product.id)
-        .single();
-      if (!error && data) prod = data;
+  const addToCart = (product, quantity) => {
+    if (!product.isAvailable || product.stock < 1) {
+      console.warn("Product is not available or out of stock");
+      return false;
     }
 
-    // ✅ FIXED: تحديد السعر الصحيح - newprice إذا موجود، وإلا price
-    const correctPrice = prod.newprice && prod.newprice > 0 ? prod.newprice : prod.price;
-
     setCart((prev) => {
-      const existing = prev.find(
-        (item) =>
-          item.id === prod.id &&
-          item.selectedColor === prod.selectedColor &&
-          item.selectedSize === prod.selectedSize
-      );
+      const existingItem = prev.find((item) => item.id === product.id);
 
-      if (existing) {
-        // إذا المنتج موجود، زود الكمية فقط
+      if (existingItem) {
+        const newQuantity = existingItem.quantity + quantity;
+        
+        if (newQuantity > product.stock) {
+          console.warn("Cannot add more than available stock");
+          return prev.map((item) =>
+            item.id === product.id
+              ? { ...item, quantity: product.stock }
+              : item
+          );
+        }
+
         return prev.map((item) =>
-          item.id === prod.id &&
-          item.selectedColor === prod.selectedColor &&
-          item.selectedSize === prod.selectedSize
-            ? { ...item, quantity: item.quantity + prod.quantity || item.quantity + 1 }
+          item.id === product.id
+            ? { ...item, quantity: newQuantity }
             : item
         );
-      } else {
-        // ✅ FIXED: إضافة المنتج مع السعر الصحيح مع property منفصل للسعر المُستخدم
-        return [...prev, { 
-          ...prod, 
-          quantity: prod.quantity || 1,
-          // ✅ إضافة السعر المستخدم كـ property منفصل للوضوح
-          effectivePrice: correctPrice,
-          // الحفاظ على الأسعار الأصلية كما هي
-          originalPrice: prod.price,
-          salePrice: prod.newprice || null
-        }];
       }
+
+      const quantityToAdd = Math.min(quantity, product.stock);
+      const effectivePrice = product.discountPrice && product.discountPrice > 0 
+        ? product.discountPrice 
+        : product.price;
+
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          brand: product.brand,
+          category: product.category,
+          price: product.price,
+          discountPrice: product.discountPrice,
+          effectivePrice,
+          stock: product.stock,
+          thumbnail: product.thumbnail,
+          quantity: quantityToAdd
+        }
+      ];
     });
+
+    return true;
   };
 
-  const removeFromCart = (id, selectedColor, selectedSize) => {
-    setCart((prev) =>
-      prev.filter(
-        (item) =>
-          !(item.id === id &&
-            item.selectedColor === selectedColor &&
-            item.selectedSize === selectedSize)
-      )
-    );
+  const removeFromCart = (productId) => {
+    setCart((prev) => prev.filter((item) => item.id !== productId));
   };
 
-  const decreaseQuantity = (id, selectedColor, selectedSize) => {
+  const decreaseQuantity = (productId) => {
     setCart((prev) =>
       prev
         .map((item) =>
-          item.id === id &&
-          item.selectedColor === selectedColor &&
-          item.selectedSize === selectedSize
+          item.id === productId
             ? { ...item, quantity: item.quantity - 1 }
             : item
         )
@@ -106,32 +96,87 @@ export const MyContextProvider = ({ children }) => {
     );
   };
 
-  // ✅ FIXED: حساب العدد والمجموع باستخدام السعر الصحيح
+  const increaseQuantity = (productId) => {
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.id === productId) {
+          const newQuantity = item.quantity + 1;
+          if (newQuantity > item.stock) {
+            console.warn("Cannot exceed available stock");
+            return item;
+          }
+          return { ...item, quantity: newQuantity };
+        }
+        return item;
+      })
+    );
+  };
+
+  const updateQuantity = (productId, newQuantity) => {
+    if (newQuantity < 1) {
+      removeFromCart(productId);
+      return;
+    }
+
+    setCart((prev) =>
+      prev.map((item) => {
+        if (item.id === productId) {
+          const validQuantity = Math.min(newQuantity, item.stock);
+          return { ...item, quantity: validQuantity };
+        }
+        return item;
+      })
+    );
+  };
+
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("tech-store-cart");
+  };
+
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
-  // ✅ FIXED: حساب المجموع الكلي باستخدام السعر الفعال
   const cartTotal = cart.reduce((total, item) => {
-    const itemPrice = item.effectivePrice || item.newprice || item.price;
-    return total + (itemPrice * item.quantity);
+    return total + (item.effectivePrice * item.quantity);
   }, 0);
 
+  const getItemQuantity = (productId) => {
+    const item = cart.find((item) => item.id === productId);
+    return item ? item.quantity : 0;
+  };
+
+  const isInCart = (productId) => {
+    return cart.some((item) => item.id === productId);
+  };
+
   return (
-    <MyContext.Provider
+    <CartContext.Provider
       value={{
         cart,
         addToCart,
         removeFromCart,
         decreaseQuantity,
-        cartCount,
-        cartTotal, // ✅ إضافة المجموع الكلي
+        increaseQuantity,
+        updateQuantity,
         clearCart,
+        cartCount,
+        cartTotal,
+        getItemQuantity,
+        isInCart,
+        isLoaded
       }}
     >
       {children}
-    </MyContext.Provider>
+    </CartContext.Provider>
   );
 };
 
-export const useMyContext = () => useContext(MyContext);
+export const useCart = () => {
+  const context = useContext(CartContext);
+  if (!context) {
+    throw new Error("useCart must be used within a CartProvider");
+  }
+  return context;
+};
 
-export default MyContext;
+export default CartContext;

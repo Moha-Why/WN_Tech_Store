@@ -4,7 +4,8 @@ import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { FaStar, FaShoppingCart, FaCheck, FaTimes } from "react-icons/fa"
+import { FaStar, FaShoppingCart, FaCheck, FaTimes, FaCheckCircle } from "react-icons/fa"
+import { useCart } from "@/src/context/CartContext"
 
 export default function ProductDetailClient({ 
   productId, 
@@ -12,9 +13,13 @@ export default function ProductDetailClient({
   initialRelatedProducts 
 }) {
   const [quantity, setQuantity] = useState(1)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const { addToCart, isInCart, getItemQuantity } = useCart()
 
   const product = initialProduct
   const relatedProducts = initialRelatedProducts || []
+  const isProductInCart = isInCart(product.id)
+  const cartQuantity = getItemQuantity(product.id)
 
   const finalPrice = product.discountPrice || product.price
   const hasDiscount = product.discountPrice && product.discountPrice < product.price
@@ -36,8 +41,16 @@ export default function ProductDetailClient({
   ].filter(spec => spec.value)
 
   const handleAddToCart = () => {
-    console.log(`Adding ${quantity}x ${product.name} to cart`)
-    alert(`Added ${quantity}x ${product.name} to cart!`)
+    const success = addToCart(product, quantity)
+    
+    if (success) {
+      setShowSuccess(true)
+      setQuantity(1)
+      
+      setTimeout(() => {
+        setShowSuccess(false)
+      }, 3000)
+    }
   }
 
   const incrementQuantity = () => {
@@ -165,11 +178,18 @@ export default function ProductDetailClient({
             {/* Stock Status */}
             <div className="mb-6">
               {product.isAvailable ? (
-                <div className="flex items-center gap-2 text-green-600">
-                  <FaCheck />
-                  <span className="font-medium">
-                    In Stock {product.stock && `(${product.stock} available)`}
-                  </span>
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-green-600">
+                    <FaCheck />
+                    <span className="font-medium">
+                      In Stock {product.stock && `(${product.stock} available)`}
+                    </span>
+                  </div>
+                  {isProductInCart && (
+                    <div className="text-sm text-[var(--color-text-muted)]">
+                      {cartQuantity} in cart
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="flex items-center gap-2 text-[var(--color-danger)]">
@@ -210,12 +230,30 @@ export default function ProductDetailClient({
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              disabled={!product.isAvailable}
+              disabled={!product.isAvailable || quantity + cartQuantity > product.stock}
               className="w-full bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--color-primary-foreground)] py-4 rounded-lg font-semibold flex items-center justify-center gap-2 mb-4 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <FaShoppingCart />
-              {product.isAvailable ? "Add to Cart" : "Out of Stock"}
+              {!product.isAvailable 
+                ? "Out of Stock" 
+                : quantity + cartQuantity > product.stock
+                ? "Not Enough Stock"
+                : "Add to Cart"
+              }
             </button>
+
+            {/* Success Message */}
+            {showSuccess && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mb-4 p-3 bg-green-100 border border-green-500 rounded-lg flex items-center gap-2 text-green-700"
+              >
+                <FaCheckCircle />
+                <span className="font-medium">Added to cart successfully!</span>
+              </motion.div>
+            )}
 
             {/* Description */}
             {product.description && (

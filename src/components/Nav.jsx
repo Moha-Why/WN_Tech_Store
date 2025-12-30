@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { ShoppingCart, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useCart } from "../context/CartContext";
 
 // Mock context for demo - replace with your actual context
 const useMyContext = () => {
@@ -13,7 +14,7 @@ const useMyContext = () => {
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const { cart } = useMyContext();
+  const { cart } = useCart();
   const cartCount = cart.length;
 
   useEffect(() => {

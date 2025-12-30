@@ -69,7 +69,7 @@ export default function Footer() {
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
+      viewport={{ once: true, margin: "-10px", amount: 0.02 }}
       className="bg-slate-900 text-slate-200 border-t border-slate-800"
     >
       {/* Main Footer Content */}
