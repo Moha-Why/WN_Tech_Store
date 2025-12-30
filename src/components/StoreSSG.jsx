@@ -223,7 +223,7 @@ export default function TechStore() {
                       src={
                         hoveredId === `sale-${product.id}` &&
                         product.productImagePath
-                          ? product.productImagePath
+                          ? product.thumbnail
                           : product.thumbnail
                       }
                       alt={product.name}
