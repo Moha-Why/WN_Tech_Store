@@ -220,7 +220,7 @@ export default function Cart() {
                               <div className="flex items-center gap-2 bg-[var(--color-bg-muted)] rounded-lg p-1">
                                 <motion.button
                                   onClick={() => decreaseQuantity(item.id)}
-                                  disabled={isDisabled}
+                                  // disabled={isDisabled}
                                   className="w-8 h-8 flex items-center justify-center text-[var(--color-text-primary)] disabled:opacity-30 disabled:cursor-not-allowed rounded-md hover:bg-[var(--color-border)] transition-colors"
                                   whileTap={{ scale: 0.9 }}
                                 >
@@ -241,7 +241,7 @@ export default function Cart() {
                                 
                                 <motion.button
                                   onClick={() => increaseQuantity(item.id)}
-                                  disabled={isDisabled || item.quantity >= item.stock}
+                                  disabled={item.quantity >= item.stock}
                                   className="w-8 h-8 flex items-center justify-center text-[var(--color-text-primary)] disabled:opacity-30 disabled:cursor-not-allowed rounded-md hover:bg-[var(--color-border)] transition-colors"
                                   whileTap={{ scale: 0.9 }}
                                 >
