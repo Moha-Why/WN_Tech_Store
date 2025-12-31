@@ -39,7 +39,7 @@ async function getRelatedProducts(product, limit = 8) {
 }
 
 export default async function ProductDetailPage({ params }) {
-  const { id } = params
+  const { id } = await params
   
   try {
     console.log(`📦 Loading product ${id} from Supabase...`)
@@ -72,7 +72,7 @@ export default async function ProductDetailPage({ params }) {
 }
 
 export async function generateMetadata({ params }) {
-  const { id } = params
+  const { id } = await params
   
   try {
     const product = await getProductById(id)
