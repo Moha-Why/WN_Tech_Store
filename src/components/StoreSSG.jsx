@@ -41,6 +41,7 @@ export default function TechStore() {
   const [sortBy, setSortBy] = useState("newest")
   const [availabilityFilter, setAvailabilityFilter] = useState("")
   const [hoveredId, setHoveredId] = useState(null)
+  const [isDisabled, setIsDisabled] = useState(false)
 
   useEffect(() => {
     fetchProducts()
@@ -131,6 +132,10 @@ export default function TechStore() {
     return Math.round(((originalPrice - salePrice) / originalPrice) * 100)
   }
 
+  const handleClick = (e) => {
+    setIsDisabled(true)
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
@@ -182,12 +187,13 @@ export default function TechStore() {
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {saleProducts.map((product, index) => (
-              <Link href={`/product/${product.id}`} key={`sale-${product.id}`}>
+              <Link href={`/product/${product.id}`} key={`sale-${product.id}`} className={isDisabled ? "opacity-50 transition duration-300" : "transition duration-300"} onClick={isDisabled ? (e) => {e.preventDefault()} : ""}>
                 <motion.div
                   variants={itemVariants}
                   whileHover={{ y: -4, scale: 1.02 }}
                   onMouseEnter={() => setHoveredId(`sale-${product.id}`)}
                   onMouseLeave={() => setHoveredId(null)}
+                  onClick={handleClick}
                   className="
                     group relative cursor-pointer
                     bg-[var(--color-card)]
@@ -462,14 +468,16 @@ export default function TechStore() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
           >
             {filteredProducts.map((product, index) => (
-              <Link href={`/product/${product.id}`} key={product.id}>
+              <Link href={`/product/${product.id}`} key={product.id} className={isDisabled ? "opacity-50 transition duration-300" : "transition duration-300"} onClick={isDisabled ? (e) => {e.preventDefault()} : ""}>
                 <motion.div
                   variants={itemVariants}
+                  onClick={handleClick}
                   whileHover={{ y: -4 }}
                   className="group bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
                   onMouseEnter={() => setHoveredId(product.id)}
                   onMouseLeave={() => setHoveredId(null)}
                 >
+                  {/* <div className="inset-0 filter grayscale-50 absolute z-20"></div> */}
                   <div className="relative overflow-hidden bg-slate-50 h-80">
                     <Image
                       src={product.productImagePath}
