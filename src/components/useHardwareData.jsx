@@ -12,7 +12,7 @@ export const useHardwareData = () => {
       try {
         setIsLoadingCPU(true);
         // Using CPU-World API alternative - TechPowerUp CPU Database
-        const response = await fetch('http://localhost:3000/api/revalidate?type=cpu');
+        const response = await fetch('/api/revalidate?type=cpu');
         const res = await response.json();
         const cpus = res.data
         

@@ -692,7 +692,7 @@ function ManageProducts() {
 
   if (loading) {
     return (
-      <div className="bg-surface rounded-2xl p-8 border border-border">
+      <div className="bg-surface rounded-2xl p-6 sm:p-8 border border-border">
         <div className="text-center text-text-secondary">
           Loading products...
         </div>
@@ -702,7 +702,7 @@ function ManageProducts() {
 
   if (products.length === 0) {
     return (
-      <div className="bg-surface rounded-2xl p-8 border border-border">
+      <div className="bg-surface rounded-2xl p-6 sm:p-8 border border-border">
         <div className="text-center text-text-secondary">
           No products yet. Add your first product!
         </div>
@@ -721,11 +721,11 @@ function ManageProducts() {
         <motion.div
           key={product.id}
           variants={cardVariants}
-          className="bg-surface rounded-xl p-6 border border-border hover:border-primary transition-colors"
+          className="bg-surface rounded-xl p-4 sm:p-6 border border-border hover:border-primary transition-colors"
         >
-          <div className="flex gap-6">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
             {/* Thumbnail */}
-            <div className="w-32 h-32 bg-bg rounded-lg overflow-hidden flex-shrink-0">
+            <div className="w-full sm:w-32 h-48 sm:h-32 bg-bg rounded-lg overflow-hidden flex-shrink-0">
               {product.thumbnail ? (
                 <img
                   src={product.thumbnail}
@@ -741,9 +741,9 @@ function ManageProducts() {
 
             {/* Content */}
             <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-4 mb-3">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
                 <div className="min-w-0">
-                  <h3 className="text-lg font-semibold text-text-primary truncate">
+                  <h3 className="text-base sm:text-lg font-semibold text-text-primary truncate">
                     {product.name}
                   </h3>
                   <p className="text-sm text-text-secondary">
@@ -753,16 +753,16 @@ function ManageProducts() {
 
                 <button
                   onClick={() => deleteProduct(product.id)}
-                  className="flex items-center gap-2 px-3 py-2 text-sm bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors"
+                  className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors w-full sm:w-auto"
                 >
                   <FiTrash2 className="w-4 h-4" />
                   Delete
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
                 <div>
-                  <p className="text-text-secondary">Price</p>
+                  <p className="text-text-secondary text-xs sm:text-sm">Price</p>
                   <p className="font-medium text-text-primary">
                     ${product.discountPrice ?? product.price}
                   </p>
@@ -774,23 +774,23 @@ function ManageProducts() {
                 </div>
 
                 <div>
-                  <p className="text-text-secondary">Stock</p>
+                  <p className="text-text-secondary text-xs sm:text-sm">Stock</p>
                   <p className="font-medium text-text-primary">
                     {product.stock}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-text-secondary">Rating</p>
+                  <p className="text-text-secondary text-xs sm:text-sm">Rating</p>
                   <p className="font-medium text-text-primary">
                     {product.rating ?? "—"}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-text-secondary">Status</p>
+                  <p className="text-text-secondary text-xs sm:text-sm">Status</p>
                   <p
-                    className={`font-medium ${
+                    className={`font-medium text-sm ${
                       product.isAvailable
                         ? "text-green-500"
                         : "text-red-500"
@@ -802,31 +802,32 @@ function ManageProducts() {
               </div>
 
               {product.description && (
-                <p className="mt-4 text-sm text-text-secondary line-clamp-2">
+                <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-text-secondary line-clamp-2">
                   {product.description}
                 </p>
               )}
 
               {product.specs && (
-                <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
                   {Object.entries(product.specs)
                     .filter(([, value]) => value)
                     .map(([key, value]) => (
                       <div
                         key={key}
-                        className="bg-bg border border-border rounded-lg px-3 py-2 text-xs"
+                        className="bg-bg border border-border rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs"
                       >
-                        <p className="text-text-secondary capitalize">
+                        <p className="text-text-secondary capitalize text-[10px] sm:text-xs">
                           {key.replace(/([A-Z])/g, " $1")}
                         </p>
-                        <p className="font-medium text-text-primary">
+                        <p className="font-medium text-text-primary truncate">
                           {value}
                         </p>
                       </div>
                     ))}
-                </div>)}
-              </div>
+                </div>
+              )}
             </div>
+          </div>
         </motion.div>
       ))}
     </motion.div>
