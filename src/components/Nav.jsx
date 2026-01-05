@@ -46,8 +46,9 @@ export default function Navbar() {
               whileTap={{ scale: 0.98 }}
               className="cursor-pointer"
             >
-              <Link href="/" aria-label="WN Store Home">
+              <Link href="/" aria-label="N&Y Store Home">
                 <div className="flex items-center gap-2">
+                  
                   {/* Tech-themed logo icon */}
                   <div className="relative">
                     <motion.div
@@ -57,7 +58,7 @@ export default function Navbar() {
                         repeat: Infinity,
                         ease: "linear"
                       }}
-                      className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg blur-sm opacity-50"
+                      className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-lg blur-sm opacity-50"
                     />
                     <motion.div 
                       animate={{ rotate: 360 }}
@@ -66,7 +67,7 @@ export default function Navbar() {
                         repeat: Infinity,
                         ease: "linear"
                       }}
-                      className="relative bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg"
+                      className="relative bg-gradient-to-br from-red-600 to-red-700 p-2 rounded-lg"
                     >
                       <svg
                         className="w-6 h-6 md:w-8 md:h-8 text-white"
@@ -84,10 +85,10 @@ export default function Navbar() {
                     </motion.div>
                   </div>
                   
-                  {/* Store name - hidden on mobile */}
+                  {/* Store name */}
                   <div className="hidden sm:block">
                     <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                      WN Store
+                      N&Y Store
                     </h1>
                     <p className="text-xs text-slate-400 -mt-1">Tech & Electronics</p>
                   </div>
@@ -108,7 +109,7 @@ export default function Navbar() {
                   href="/cart"
                   className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg transition-all duration-200 ${
                     scrolled 
-                      ? "bg-slate-800 hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600" 
+                      ? "bg-slate-800 hover:bg-red-600" 
                       : "bg-slate-800/50 hover:bg-slate-700/50"
                   }`}
                   aria-label={`Shopping cart with ${cartCount} items`}
@@ -124,7 +125,7 @@ export default function Navbar() {
                         stiffness: 500,
                         damping: 20
                       }}
-                      className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-pink-600 text-white text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-slate-900"
+                      className="absolute -top-2 -right-2 bg-gradient-to-r from-red-500 to-red-600 text-white text-xs font-bold w-5 h-5 sm:w-6 sm:h-6 flex items-center justify-center rounded-full shadow-lg border-2 border-slate-900"
                     >
                       {cartCount > 99 ? "99+" : cartCount}
                     </motion.span>
@@ -175,6 +176,7 @@ export default function Navbar() {
           </div>
         </div>
       </motion.nav>
+
 
       {/* Hero Section */}
       <motion.section

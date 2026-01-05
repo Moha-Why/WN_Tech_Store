@@ -13,7 +13,7 @@ const outfit = Outfit({
 export const metadata = {
   title: "Wn Store",
   description: "Shop the latest collection of elegant dresses – evening gowns, casual styles & chic outfits. High-quality fabrics, affordable prices & fast delivery.",
-  icons: { icon: "/favicon.ico" },
+  icons: { icon: "/N&Y_PhotoGrid.png" },
 };
 
 export default function RootLayout({ children }) {

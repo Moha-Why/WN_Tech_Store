@@ -82,11 +82,11 @@ export default function Footer() {
               <motion.div
                 whileHover={{ rotate: 360 }}
                 transition={{ duration: 0.6 }}
-                className="bg-gradient-to-br from-blue-500 to-purple-600 p-2 rounded-lg"
+                className="bg-gradient-to-br from-red-600 to-red-700 p-2 rounded-lg"
               >
                 <Cpu className="w-6 h-6 text-white" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-white">WN Store</h3>
+              <h3 className="text-2xl font-bold text-white">N&Y Store</h3>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
               Your premier destination for cutting-edge technology and innovative electronics. Quality products, unbeatable service.
@@ -101,7 +101,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-blue-600 transition-colors duration-300"
+                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Facebook page"
               >
                 <Facebook size={20} />
@@ -111,10 +111,10 @@ export default function Footer() {
                 variants={iconVariants}
                 whileHover="hover"
                 whileTap="tap"
-                href="https://www.instagram.com/wn_store_eg_2025/"
+                href="https://www.instagram.com/N&Y_store_eg_2025/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Instagram page"
               >
                 <Instagram size={20} />
@@ -127,7 +127,7 @@ export default function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-sky-500 transition-colors duration-300"
+                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Twitter page"
               >
                 <Twitter size={20} />
@@ -140,7 +140,7 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-blue-700 transition-colors duration-300"
+                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our LinkedIn page"
               >
                 <Linkedin size={20} />
@@ -159,9 +159,9 @@ export default function Footer() {
                 key={link}>
                   <Link
                     href={"/"}
-                    className="text-slate-400 hover:text-blue-400 transition-colors duration-200 text-sm flex items-center"
+                    className="text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm flex items-center"
                   >
-                    <span className="w-1 h-1 bg-blue-500 rounded-full mr-2"></span>
+                    <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                     {link}
                   </Link>
                 </motion.li>
@@ -175,21 +175,21 @@ export default function Footer() {
             <div className="space-y-3">
               <motion.a
                 whileHover={{ x: 5 }}
-                href="mailto:info@wnstore.com"
-                className="flex items-center gap-3 text-slate-400 hover:text-blue-400 transition-colors duration-200 text-sm group"
+                href="mailto:info@N&Ystore.com"
+                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-blue-600 transition-colors duration-300">
+                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <Mail size={16} />
                 </div>
-                <span>info@wnstore.com</span>
+                <span>info@N&Ystore.com</span>
               </motion.a>
               
               <motion.a
                 whileHover={{ x: 5 }}
                 href="tel:+20123456789"
-                className="flex items-center gap-3 text-slate-400 hover:text-blue-400 transition-colors duration-200 text-sm group"
+                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-blue-600 transition-colors duration-300">
+                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <Phone size={16} />
                 </div>
                 <span>+20 123 456 789</span>
@@ -197,9 +197,9 @@ export default function Footer() {
               
               <motion.div
                 whileHover={{ x: 5 }}
-                className="flex items-center gap-3 text-slate-400 text-sm group"
+                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-blue-600 transition-colors duration-300">
+                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <MapPin size={16} />
                 </div>
                 <span>Alexandria, Egypt</span>
@@ -219,7 +219,7 @@ export default function Footer() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
             <p>
-              © {new Date().getFullYear()} WN Store. All rights reserved.
+              © {new Date().getFullYear()} N&Y Store. All rights reserved.
             </p>
             <p>
               Designed & Developed by{" "}
