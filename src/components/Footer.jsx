@@ -86,7 +86,7 @@ export default function Footer() {
               >
                 <Cpu className="w-6 h-6 text-white" />
               </motion.div>
-              <h3 className="text-2xl font-bold text-white">N&Y Store</h3>
+              <h3 className="text-2xl font-bold  text-white"><span className="text-red-600">N&Y</span> Store</h3>
             </div>
             <p className="text-slate-400 text-sm leading-relaxed">
               Your premier destination for cutting-edge technology and innovative electronics. Quality products, unbeatable service.

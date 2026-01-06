@@ -658,6 +658,7 @@ function AddProduct() {
 function ManageProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
+  const [toggling, setToggling] = useState({}) // Track toggling state per product
 
   useEffect(() => {
     fetchProducts()
@@ -676,6 +677,27 @@ function ManageProducts() {
       setProducts(data || [])
     }
     setLoading(false)
+  }
+
+  const toggleAvailability = async (id, currentStatus) => {
+    setToggling((prev) => ({ ...prev, [id]: true }))
+
+    const { error } = await supabase
+      .from("products")
+      .update({ isAvailable: !currentStatus })
+      .eq("id", id)
+
+    if (error) {
+      alert(error.message)
+    } else {
+      setProducts((p) =>
+        p.map((prod) =>
+          prod.id === id ? { ...prod, isAvailable: !currentStatus } : prod
+        )
+      )
+    }
+
+    setToggling((prev) => ({ ...prev, [id]: false }))
   }
 
   const deleteProduct = async (id) => {
@@ -751,13 +773,33 @@ function ManageProducts() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => deleteProduct(product.id)}
-                  className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors w-full sm:w-auto"
-                >
-                  <FiTrash2 className="w-4 h-4" />
-                  Delete
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => toggleAvailability(product.id, product.isAvailable)}
+                    disabled={toggling[product.id]}
+                    className={`flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors w-full sm:w-auto ${
+                      product.isAvailable
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-gray-600 hover:bg-gray-700 text-white"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {toggling[product.id] ? (
+                      <span className="text-xs">...</span>
+                    ) : product.isAvailable ? (
+                      "Available"
+                    ) : (
+                      "Unavailable"
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => deleteProduct(product.id)}
+                    className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors w-full sm:w-auto"
+                  >
+                    <FiTrash2 className="w-4 h-4" />
+                    Delete
+                  </button>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">

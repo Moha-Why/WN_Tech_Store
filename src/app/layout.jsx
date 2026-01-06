@@ -11,8 +11,8 @@ const outfit = Outfit({
 });
 
 export const metadata = {
-  title: "Wn Store",
-  description: "Shop the latest collection of elegant dresses – evening gowns, casual styles & chic outfits. High-quality fabrics, affordable prices & fast delivery.",
+  title: "N&Y Latptop Store - Find the strongest and most reliable laptops",
+  description: "Your one-stop shop for high-performance laptops. Discover top brands, unbeatable prices, and exceptional customer service at N&Y Laptop Store.",
   icons: { icon: "/N&Y_PhotoGrid.png" },
 };
 
@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${outfit.className} h-full`}>
       <body className={`${outfit.className} antialiased flex flex-col min-h-screen`}>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/N&Y_PhotoGrid.png" />
         <Analytics />
         <CartProvider>
           <ClientLayoutWrapper className="flex-grow">

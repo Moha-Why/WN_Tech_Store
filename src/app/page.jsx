@@ -77,12 +77,12 @@ export default async function Home() {
  * Enhanced Metadata for SEO
  */
 export const metadata = {
-  title: "Wn Store - Laptops for Every Need",
+  title: "N&Y Store - Laptops for Every Need",
   description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
   keywords: "laptops, gaming laptops, ultrabooks, notebook, online shopping, Egypt",
-  authors: [{ name: "Wn Store" }],
-  creator: "Wn Store",
-  publisher: "Wn Store",
+  authors: [{ name: "N&Y Store" }],
+  creator: "N&Y Store",
+  publisher: "N&Y Store",
   robots: {
     index: true,
     follow: true,
@@ -98,12 +98,12 @@ export const metadata = {
     type: "website",
     locale: "en_US",
     url: "https://wn-store.vercel.app",
-    siteName: "Wn Store",
-    title: "Wn Store - Laptops for Every Need",
+    siteName: "N&Y Store",
+    title: "N&Y Store - Laptops for Every Need",
     description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
     images: [
       {
-        url: "/og-image-laptops.jpg", // replace with laptop-related OG image
+        url: "/laptops.jpg", // replace with laptop-related OG image
         width: 1200,
         height: 630,
         alt: "Wn Store Laptops Collection",
@@ -113,10 +113,10 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Wn Store - Laptops for Every Need",
-    description: "Shop the latest laptops at Wn Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
+    title: "N&Y Store - Laptops for Every Need",
+    description: "Shop the latest laptops at N&Y Store. Find high-performance gaming laptops, ultrabooks, and everyday laptops with fast delivery in Egypt.",
     images: ["/og-image-laptops.jpg"],
-    creator: "@wnstore"
+    creator: "@n&ystore"
   },
   alternates: {
     canonical: "https://wn-store.vercel.app"

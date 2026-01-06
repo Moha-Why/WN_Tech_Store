@@ -72,7 +72,10 @@ export const CartProvider = ({ children }) => {
           discountPrice: product.discountPrice,
           effectivePrice,
           stock: product.stock,
-          thumbnail: product.thumbnail,
+          cpu: product.cpu,
+          ram: product.ram,
+          storage: product.storage,
+          // thumbnail: product.thumbnail,
           quantity: quantityToAdd
         }
       ];

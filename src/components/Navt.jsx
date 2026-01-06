@@ -57,46 +57,27 @@ export default function TechStoreHeader() {
           <Link href="/">
             <motion.div
               whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex-shrink-0 cursor-pointer"
+              whileTap={{ scale: 0.98 }}
+              className="cursor-pointer"
             >
-              <div className="flex items-center gap-2">
-                {/* Tech-themed logo icon */}
-                <div className="relative">
-                  <motion.div
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.6 }}
-                    className="absolute inset-0 bg-gradient-to-r from-red-600 to-red-700 rounded-lg blur-sm opacity-50"
-                  />
-                  <motion.div 
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.6 }}
-                    className="relative bg-gradient-to-br from-red-600 to-red-700 p-2 rounded-lg"
-                  >
-                    <svg
-                      className="w-6 h-6 md:w-8 md:h-8 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"
-                      />
-                    </svg>
-                  </motion.div>
+              <Link href="/" aria-label="N&Y Store Home">
+                <div className="flex items-center flex-wrap md:-mt-3">
+                  
+                  {/* Logo image */}
+                  <div className="relative w-12 h-11 md:w-14 md:h-14">
+                    <img
+                      src="/N&Y_PhotoGrid.png"
+                      alt="N&Y Store Logo"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  
+                  {/* Store name */}
+                  <div className="hidden -mt-4 sm:block w-full">
+                    <p className="text-xs text-slate-400 -mt-1">Tech & Electronics</p>
+                  </div>
                 </div>
-                
-                {/* Store name */}
-                <div className="hidden sm:block">
-                  <h1 className="text-xl md:text-2xl font-bold text-white tracking-tight">
-                    N&Y Store
-                  </h1>
-                  <p className="text-xs text-slate-400 -mt-1">Tech & Electronics</p>
-                </div>
-              </div>
+              </Link>
             </motion.div>
           </Link>
 

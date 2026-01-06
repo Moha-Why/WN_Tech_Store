@@ -182,7 +182,7 @@ export default function ProductDetailClient({
                   <div className="flex items-center gap-2 text-green-600">
                     <FaCheck />
                     <span className="font-medium">
-                      In Stock {product.stock && `(${product.stock} available)`}
+                      In Stock
                     </span>
                   </div>
                   {isProductInCart && (

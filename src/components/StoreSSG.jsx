@@ -540,7 +540,7 @@ export default function TechStore() {
                     )}
 
                     <div className={`text-xs font-medium ${product.isAvailable ? 'text-green-600' : 'text-red-600'}`}>
-                      {product.isAvailable ? `✓ In Stock${product.stock ? ` (${product.stock})` : ''}` : '✗ Out of Stock'}
+                      {product.isAvailable ? `✓ In Stock` : '✗ Out of Stock'}
                     </div>
                   </div>
                 </motion.div>

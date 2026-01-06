@@ -48,29 +48,6 @@ export default async function StorePage() {
 }
 
 /**
- * Metadata للـ SEO
- */
-export const metadata = {
-  title: "Store - Wn Store Fashion Collection",
-  description: "Browse our complete fashion collection. Find the perfect dress, casual wear, or bag from our curated selection.",
-  keywords: "fashion store, dresses, casual wear, bags, online shopping, Egypt, fashion collection",
-  openGraph: {
-    title: "Store - Wn Store Fashion Collection",
-    description: "Browse our complete fashion collection. Find the perfect outfit from our curated selection.",
-    type: "website",
-    url: "https://your-domain.com/store",
-    images: [
-      {
-        url: "/store-og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "Wn Store Complete Fashion Collection"
-      }
-    ]
-  }
-}
-
-/**
  * إعدادات الcache للأداء الأمثل - محسنة
  */
 export const dynamic = 'force-dynamic'

@@ -71,6 +71,33 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
+  const WHATSAPP_NUMBER = "201013121403";
+
+  const message = `
+  السلام عليكم.
+  
+  I want to order:
+  ${cart.map(item => (
+    `
+    • Model: ${item.name}
+    • CPU: ${item.cpu}
+    • RAM: ${item.ram}
+    • Storage: ${item.storage}
+    • Price: ${item.price}
+    `
+  )).join("\n"
+  )}
+  delivery details:
+  • Name: ${name}
+  • Phone: ${phone}
+  • Address: ${address}
+  Please confirm availability.
+    `;
+
+  const whatsappLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+
+
   const totalSavings = cart.reduce((savings, item) => {
     if (item.discountPrice && item.price > item.discountPrice) {
       return savings + ((item.price - item.discountPrice) * item.quantity);
@@ -78,76 +105,76 @@ export default function CheckoutPage() {
     return savings;
   }, 0);
 
-  const handleSubmit = async () => {
-    setErrorMessage("");
-    setIsSubmitting(true);
+  // const handleSubmit = async () => {
+  //   setErrorMessage("");
+  //   setIsSubmitting(true);
 
-    if (cart.length === 0) {
-      setErrorMessage("Your cart is empty. Please add at least one product.");
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (cart.length === 0) {
+  //     setErrorMessage("Your cart is empty. Please add at least one product.");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (!name || !address || !phone) {
-      setErrorMessage("Please fill in all fields.");
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (!name || !address || !phone) {
+  //     setErrorMessage("Please fill in all fields.");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (!phone.startsWith("01")) {
-      setErrorMessage("Phone number must start with 01.");
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (!phone.startsWith("01")) {
+  //     setErrorMessage("Phone number must start with 01.");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    if (phone.length < 11) {
-      setErrorMessage("Phone number must be at least 11 digits.");
-      setIsSubmitting(false);
-      return;
-    }
+  //   if (phone.length < 11) {
+  //     setErrorMessage("Phone number must be at least 11 digits.");
+  //     setIsSubmitting(false);
+  //     return;
+  //   }
 
-    try {
-      const orderItems = cart.map((item) => {
-        return {
-        product_id: item.id,
-        product_quantity: item.quantity
-      }});
+  //   try {
+  //     const orderItems = cart.map((item) => {
+  //       return {
+  //       product_id: item.id,
+  //       product_quantity: item.quantity
+  //     }});
 
-      const { error: orderError } = await supabase
-      .from("orders")
-      .insert({
-        name,
-        phone,
-        address,
-        items: orderItems,
-      });
+  //     const { error: orderError } = await supabase
+  //     .from("orders")
+  //     .insert({
+  //       name,
+  //       phone,
+  //       address,
+  //       items: orderItems,
+  //     });
 
-    if (orderError) throw orderError;
-    console.log(cart)
+  //   if (orderError) throw orderError;
+  //   console.log(cart)
 
-    const stockUpdates = cart.map(async (item) => {
-      const amount = item.stock - item.quantity 
-      const { error: stockError } = await supabase
-        .from("products")
-        .update({ 
-          stock: amount
-        })
-        .eq("id", Number(item.id));
+  //   // const stockUpdates = cart.map(async (item) => {
+  //   //   const amount = item.stock - item.quantity 
+  //   //   const { error: stockError } = await supabase
+  //   //     .from("products")
+  //   //     .update({ 
+  //   //       stock: amount
+  //   //     })
+  //   //     .eq("id", Number(item.id));
 
-      if (stockError) throw stockError;
-    });
+  //   //   if (stockError) throw stockError;
+  //   // });
 
-      await Promise.all(stockUpdates);
+  //     // await Promise.all(stockUpdates);
 
-      clearCart();
-      router.push("/success");
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      setErrorMessage("Failed to submit order. Please try again.");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //     clearCart();
+  //     router.push("/success");
+  //   } catch (error) {
+  //     console.error("Error submitting order:", error);
+  //     setErrorMessage("Failed to submit order. Please try again.");
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   return (
     <motion.div
@@ -188,7 +215,7 @@ export default function CheckoutPage() {
                 )}
               </AnimatePresence>
 
-              <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }} className="space-y-5">
+              <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
                     Full Name
@@ -233,9 +260,12 @@ export default function CheckoutPage() {
                   />
                 </div>
 
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting}
+
+                <motion.a
+                  href={whatsappLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  // disabled={isSubmitting}
                   className="w-full py-4 bg-[var(--color-primary)] text-[var(--color-primary-foreground)] rounded-lg font-semibold flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   whileHover={!isSubmitting ? {
                     scale: 1.02,
@@ -254,18 +284,15 @@ export default function CheckoutPage() {
                     </>
                   ) : (
                     <>
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                      Confirm Order
+                        Order via WhatsApp
                     </>
                   )}
-                </motion.button>
+                </motion.a>
 
                 <p className="text-xs text-[var(--color-text-muted)] text-center">
                   Your order will be sent to WhatsApp for confirmation and delivery arrangement
                 </p>
-              </form>
+              </div>
             </div>
           </motion.div>
 
