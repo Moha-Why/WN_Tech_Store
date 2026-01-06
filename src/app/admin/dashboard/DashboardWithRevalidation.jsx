@@ -305,7 +305,7 @@ function AddProduct() {
       storage: form.storage || null,
       gpu: form.gpu || null,
       screenSize: form.screenSize || null,
-      battery: form.battery || null,
+      battery: "Removed",
       camera: form.camera || null,
       os: form.os || null,
   }
@@ -610,7 +610,7 @@ function AddProduct() {
                 ))}
               </select>
 
-              <select
+              {/* <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
                 value={form.battery}
                 onChange={(e) => updateSpec("battery", e.target.value)}
@@ -621,7 +621,7 @@ function AddProduct() {
                     {battery}
                   </option>
                 ))}
-              </select>
+              </select> */}
 
               <select
                 className="w-full px-4 py-3 bg-bg border border-border rounded-lg text-text-primary focus:outline-none focus:ring-2 focus:ring-primary transition-shadow"
