@@ -149,7 +149,7 @@ export default function Cart() {
                       }}
                     >
                       <div className="p-4 sm:p-5 flex flex-col sm:flex-row gap-4 sm:gap-5">
-                        <div className="relative w-full sm:w-32 h-48 sm:h-32 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
+                        <div className="relative w-full sm:w-32 h-60 sm:h-32 flex-shrink-0 bg-[var(--color-bg-muted)] rounded-lg overflow-hidden">
                           <Image
                             src={item.productImagePath}
                             alt={item.name}
