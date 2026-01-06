@@ -70,7 +70,7 @@ export default function Footer() {
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-10px", amount: 0.02 }}
-      className="bg-slate-900 text-slate-200 border-t border-slate-800"
+      className="bg-red-900 text-red-50 border-t border-red-950"
     >
       {/* Main Footer Content */}
       <div className="container mx-auto px-4 py-12 md:py-16">
@@ -98,13 +98,13 @@ export default function Footer() {
                   
                   {/* Store name */}
                   <div className="hidden -mt-4 sm:block w-full">
-                    <p className="text-xs text-slate-400 -mt-1">Tech & Electronics</p>
+                    <p className="text-xs text-red-400 -mt-1">Tech & Electronics</p>
                   </div>
                 </div>
               </Link>
             </motion.div>
             </div>
-            {/* <p className="text-slate-400 text-sm leading-relaxed">
+            {/* <p className="text-red-400 text-sm leading-relaxed">
               Your premier destination for cutting-edge technology and innovative electronics. Quality products, unbeatable service.
             </p> */}
             
@@ -117,7 +117,7 @@ export default function Footer() {
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                className="bg-red-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Facebook page"
               >
                 <Facebook size={20} />
@@ -130,7 +130,7 @@ export default function Footer() {
                 href="https://www.instagram.com/N&Y_store_eg_2025/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                className="bg-red-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Instagram page"
               >
                 <Instagram size={20} />
@@ -143,7 +143,7 @@ export default function Footer() {
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                className="bg-red-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our Twitter page"
               >
                 <Twitter size={20} />
@@ -156,7 +156,7 @@ export default function Footer() {
                 href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-slate-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
+                className="bg-red-800 p-2.5 rounded-lg hover:bg-red-600 transition-colors duration-300"
                 aria-label="Visit our LinkedIn page"
               >
                 <Linkedin size={20} />
@@ -175,7 +175,7 @@ export default function Footer() {
                 key={link}>
                   <Link
                     href={"/"}
-                    className="text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm flex items-center"
+                    className="text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm flex items-center"
                   >
                     <span className="w-1 h-1 bg-red-500 rounded-full mr-2"></span>
                     {link}
@@ -192,9 +192,9 @@ export default function Footer() {
               <motion.a
                 whileHover={{ x: 5 }}
                 href="mailto:info@N&Ystore.com"
-                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
+                className="flex items-center gap-3 text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
+                <div className="bg-red-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <Mail size={16} />
                 </div>
                 <span>info@N&Ystore.com</span>
@@ -203,9 +203,9 @@ export default function Footer() {
               <motion.a
                 whileHover={{ x: 5 }}
                 href="tel:+20123456789"
-                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
+                className="flex items-center gap-3 text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
+                <div className="bg-red-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <Phone size={16} />
                 </div>
                 <span>+20 123 456 789</span>
@@ -213,9 +213,9 @@ export default function Footer() {
               
               <motion.div
                 whileHover={{ x: 5 }}
-                className="flex items-center gap-3 text-slate-400 hover:text-red-400 transition-colors duration-200 text-sm group"
+                className="flex items-center gap-3 text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm group"
               >
-                <div className="bg-slate-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
+                <div className="bg-red-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
                   <MapPin size={16} />
                 </div>
                 <span>Alexandria, Egypt</span>
@@ -230,10 +230,10 @@ export default function Footer() {
       {/* Bottom Bar */}
       <motion.div
         variants={itemVariants}
-        className="border-t border-slate-800 bg-slate-950"
+        className="border-t border-red-800 bg-red-950"
       >
         <div className="container mx-auto px-4 py-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-red-400">
             <p>
               © {new Date().getFullYear()} N&Y Store. All rights reserved.
             </p>

@@ -48,7 +48,7 @@ export default function TechStoreHeader() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="sticky top-0 z-50 bg-slate-900 border-b-2 border-slate-700 shadow-lg shadow-slate-900/50 backdrop-blur-sm"
+      className="sticky top-0 z-50 bg-red-900 border-b-2 border-red-950 shadow-lg shadow-red-900/50 backdrop-blur-sm"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
@@ -90,7 +90,7 @@ export default function TechStoreHeader() {
                 variants={iconVariants}
                 whileHover="hover"
                 whileTap="tap"
-                className="relative p-2.5 md:p-3 bg-slate-800 rounded-lg hover:bg-red-600 transition-all duration-50 group"
+                className="relative p-2.5 md:p-3 bg-red-800 rounded-lg hover:bg-red-700 transition-all duration-50 group"
                 aria-label={`Shopping cart with ${cartCount} items`}
               >
                 <ShoppingCart className="w-5 h-5 md:w-6 md:h-6 text-slate-200 group-hover:text-white transition-colors" />
@@ -116,7 +116,7 @@ export default function TechStoreHeader() {
               whileHover="hover"
               whileTap="tap"
               onClick={handleWhatsAppClick}
-              className="p-2.5 md:p-3 bg-slate-800 rounded-lg hover:bg-green-600 transition-all duration-50 group relative overflow-hidden"
+              className="p-2.5 md:p-3 bg-red-800 rounded-lg hover:bg-red-700 transition-all duration-50 group relative overflow-hidden"
               aria-label="Contact us on WhatsApp"
             >
               {/* Animated background pulse */}
@@ -130,7 +130,7 @@ export default function TechStoreHeader() {
                   repeat: Infinity,
                   ease: "easeInOut"
                 }}
-                className="absolute inset-0 bg-green-500 rounded-lg"
+                className="absolute inset-0 bg-red-500/30 rounded-lg"
               />
               
               <svg

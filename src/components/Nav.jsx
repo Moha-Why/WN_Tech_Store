@@ -33,8 +33,8 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
           scrolled
-            ? "bg-slate-900/95 backdrop-blur-md shadow-lg shadow-slate-900/50 border-b border-slate-700"
-            : "bg-transparent"
+            ? "bg-red-900/95 text-red-50 border-t border-red-950 backdrop-blur-md shadow-lg shadow-red-900/50 border-b "
+            : "bg-red-950/30 backdrop-blur-sm"
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -79,8 +79,8 @@ export default function Navbar() {
                   href="/cart"
                   className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg transition-all duration-200 ${
                     scrolled 
-                      ? "bg-slate-800 hover:bg-red-600" 
-                      : "bg-slate-800/50 hover:bg-slate-700/50"
+                      ? "bg-red-800 hover:bg-red-700" 
+                      : "bg-red-900/70 hover:bg-red-800/80"
                   }`}
                   aria-label={`Shopping cart with ${cartCount} items`}
                 >
@@ -114,8 +114,8 @@ export default function Navbar() {
                   rel="noopener noreferrer"
                   className={`flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-lg transition-all duration-200 relative overflow-hidden ${
                     scrolled 
-                      ? "bg-slate-800 hover:bg-green-600" 
-                      : "bg-slate-800/50 hover:bg-green-600/80"
+                      ? "bg-red-800 hover:bg-red-700" 
+                      : "bg-red-900/70 hover:bg-red-800/80"
                   }`}
                   aria-label="Contact us on WhatsApp"
                 >
@@ -130,7 +130,7 @@ export default function Navbar() {
                       repeat: Infinity,
                       ease: "easeInOut"
                     }}
-                    className="absolute inset-0 bg-green-500 rounded-lg"
+                    className="absolute inset-0 bg-red-500/30 rounded-lg"
                   />
                   
                   <svg
