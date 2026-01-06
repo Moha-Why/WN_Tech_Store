@@ -79,18 +79,34 @@ export default function Footer() {
           {/* Branding Section */}
           <motion.div variants={itemVariants} className="space-y-4">
             <div className="flex items-center gap-2">
-              <motion.div
-                whileHover={{ rotate: 360 }}
-                transition={{ duration: 0.6 }}
-                className="bg-gradient-to-br from-red-600 to-red-700 p-2 rounded-lg"
-              >
-                <Cpu className="w-6 h-6 text-white" />
-              </motion.div>
-              <h3 className="text-2xl font-bold  text-white"><span className="text-red-600">N&Y</span> Store</h3>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+              className="cursor-pointer"
+            >
+              <Link href="/" aria-label="N&Y Store Home">
+                <div className="flex items-center flex-wrap">
+                  
+                  {/* Logo image */}
+                  <div className="relative w-16 h-16 md:w-18 md:h-18">
+                    <img
+                      src="/N&Y_PhotoGrid.png"
+                      alt="N&Y Store Logo"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  
+                  {/* Store name */}
+                  <div className="hidden -mt-4 sm:block w-full">
+                    <p className="text-xs text-slate-400 -mt-1">Tech & Electronics</p>
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
             </div>
-            <p className="text-slate-400 text-sm leading-relaxed">
+            {/* <p className="text-slate-400 text-sm leading-relaxed">
               Your premier destination for cutting-edge technology and innovative electronics. Quality products, unbeatable service.
-            </p>
+            </p> */}
             
             {/* Social Media Icons */}
             <div className="flex gap-4 pt-2">
