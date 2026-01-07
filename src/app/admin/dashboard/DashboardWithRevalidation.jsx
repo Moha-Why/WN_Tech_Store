@@ -6,7 +6,6 @@ import { useHardwareData } from "@/src/components/useHardwareData"
 import {
   FiBox,
   FiTrash2,
-  FiPlus,
   FiLogOut,
   FiPackage,
   FiDollarSign,
@@ -17,6 +16,8 @@ import {
   FiLayers,
   FiStar,
   FiUpload,
+  FiPlus, 
+  FiMinus
 } from "react-icons/fi"
 import { supabase } from "@/src/lib/supabaseClient"
 import { useRouter } from "next/navigation"
@@ -32,10 +33,10 @@ const fieldVariants = {
   visible: { opacity: 1, y: 0 },
 }
 
-const cardVariants = {
-  hidden: { opacity: 0, scale: 0.95 },
-  visible: { opacity: 1, scale: 1 },
-}
+// const cardVariants = {
+//   hidden: { opacity: 0, scale: 0.95 },
+//   visible: { opacity: 1, scale: 1 },
+// }
 
 const LAPTOP_SPECS = {
   ram: ["4GB", "8GB", "16GB", "24GB", "32GB"],
@@ -655,10 +656,16 @@ function AddProduct() {
   )
 }
 
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
 function ManageProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [toggling, setToggling] = useState({}) // Track toggling state per product
+  const [toggling, setToggling] = useState({})
+  const [adjustingStock, setAdjustingStock] = useState({})
 
   useEffect(() => {
     fetchProducts()
@@ -700,10 +707,33 @@ function ManageProducts() {
     setToggling((prev) => ({ ...prev, [id]: false }))
   }
 
+  const adjustStock = async (id, currentStock, increment) => {
+    const newStock = Math.max(0, currentStock + increment)
+    
+    setAdjustingStock((prev) => ({ ...prev, [id]: true }))
+
+    const { error } = await supabase
+      .from("products")
+      .update({ stock: newStock })
+      .eq("id", id)
+
+    if (error) {
+      alert(error.message)
+    } else {
+      setProducts((p) =>
+        p.map((prod) =>
+          prod.id === id ? { ...prod, stock: newStock } : prod
+        )
+      )
+    }
+
+    setAdjustingStock((prev) => ({ ...prev, [id]: false }))
+  }
+
   const deleteProduct = async (id) => {
     if (!confirm("Delete this product?")) return
 
-    const { error } = await supabase.from("products").delete().eq("id", id)
+    const { error } = await supabase.from("product").delete().eq("id", id)
 
     if (error) {
       alert(error.message)
@@ -745,137 +775,152 @@ function ManageProducts() {
           variants={cardVariants}
           className="bg-surface rounded-xl p-4 sm:p-6 border border-border hover:border-primary transition-colors"
         >
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
-            {/* Thumbnail */}
-            <div className="w-full sm:w-32 h-48 sm:h-32 bg-bg rounded-lg overflow-hidden flex-shrink-0">
-              {product.thumbnail ? (
-                <img
-                  src={product.thumbnail}
-                  alt={product.name}
-                  className="w-full h-full object-contain"
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-text-secondary">
-                  <FiImage className="w-8 h-8" />
-                </div>
-              )}
-            </div>
-
-            {/* Content */}
-            <div className="flex-1 min-w-0">
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
-                <div className="min-w-0">
-                  <h3 className="text-base sm:text-lg font-semibold text-text-primary truncate">
-                    {product.name}
-                  </h3>
-                  <p className="text-sm text-text-secondary">
-                    {product.brand} • {product.category}
-                  </p>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => toggleAvailability(product.id, product.isAvailable)}
-                    disabled={toggling[product.id]}
-                    className={`flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors w-full sm:w-auto ${
-                      product.isAvailable
-                        ? "bg-green-600 hover:bg-green-700 text-white"
-                        : "bg-gray-600 hover:bg-gray-700 text-white"
-                    } disabled:opacity-50 disabled:cursor-not-allowed`}
-                  >
-                    {toggling[product.id] ? (
-                      <span className="text-xs">...</span>
-                    ) : product.isAvailable ? (
-                      "Available"
-                    ) : (
-                      "Unavailable"
-                    )}
-                  </button>
-
-                  <button
-                    onClick={() => deleteProduct(product.id)}
-                    className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-danger text-white rounded-lg hover:bg-danger/90 transition-colors w-full sm:w-auto"
-                  >
-                    <FiTrash2 className="w-4 h-4" />
-                    Delete
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
-                <div>
-                  <p className="text-text-secondary text-xs sm:text-sm">Price</p>
-                  <p className="font-medium text-text-primary">
-                    ${product.discountPrice ?? product.price}
-                  </p>
-                  {product.discountPrice && (
-                    <p className="text-xs line-through text-text-secondary">
-                      ${product.price}
-                    </p>
+              <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+                {/* Thumbnail */}
+                <div className="w-full sm:w-32 h-48 sm:h-32 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                  {product.thumbnail ? (
+                    <img
+                      src={product.thumbnail}
+                      alt={product.name}
+                      className="w-full h-full object-contain"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-500">
+                      <FiImage className="w-8 h-8" />
+                    </div>
                   )}
                 </div>
 
-                <div>
-                  <p className="text-text-secondary text-xs sm:text-sm">Stock</p>
-                  <p className="font-medium text-text-primary">
-                    {product.stock}
-                  </p>
-                </div>
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-3">
+                    <div className="min-w-0">
+                      <h3 className="text-base sm:text-lg font-semibold text-white truncate">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-400">
+                        {product.brand} • {product.category}
+                      </p>
+                    </div>
 
-                <div>
-                  <p className="text-text-secondary text-xs sm:text-sm">Rating</p>
-                  <p className="font-medium text-text-primary">
-                    {product.rating ?? "—"}
-                  </p>
-                </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => toggleAvailability(product.id, product.isAvailable)}
+                        disabled={toggling[product.id]}
+                        className={`flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors w-full sm:w-auto ${
+                          product.isAvailable
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-gray-600 hover:bg-gray-700 text-white"
+                        } disabled:opacity-50 disabled:cursor-not-allowed`}
+                      >
+                        {toggling[product.id] ? (
+                          <span className="text-xs">...</span>
+                        ) : product.isAvailable ? (
+                          "Available"
+                        ) : (
+                          "Unavailable"
+                        )}
+                      </button>
 
-                <div>
-                  <p className="text-text-secondary text-xs sm:text-sm">Status</p>
-                  <p
-                    className={`font-medium text-sm ${
-                      product.isAvailable
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {product.isAvailable ? "Available" : "Unavailable"}
-                  </p>
+                      <button
+                        onClick={() => deleteProduct(product.id)}
+                        className="flex items-center justify-center gap-2 px-3 py-2 text-sm bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors w-full sm:w-auto"
+                      >
+                        <FiTrash2 className="w-4 h-4" />
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-400 text-xs sm:text-sm">Price</p>
+                      <p className="font-medium text-black">
+                        ${product.discountPrice ?? product.price}
+                      </p>
+                      {product.discountPrice && (
+                        <p className="text-xs line-through text-gray-500">
+                          ${product.price}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400 text-xs sm:text-sm mb-1">Stock</p>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => adjustStock(product.id, product.stock, -1)}
+                          disabled={adjustingStock[product.id] || product.stock === 0}
+                          className="w-7 h-7 flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <FiMinus className="w-3 h-3" />
+                        </button>
+                        <span className="font-medium text-black min-w-[2rem] text-center">
+                          {product.stock}
+                        </span>
+                        <button
+                          onClick={() => adjustStock(product.id, product.stock, 1)}
+                          disabled={adjustingStock[product.id]}
+                          className="w-7 h-7 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          <FiPlus className="w-3 h-3" />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400 text-xs sm:text-sm">Rating</p>
+                      <p className="font-medium text-black">
+                        {product.rating ?? "—"}
+                      </p>
+                    </div>
+
+                    <div>
+                      <p className="text-gray-400 text-xs sm:text-sm">Status</p>
+                      <p
+                        className={`font-medium text-sm ${
+                          product.isAvailable
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {product.isAvailable ? "Available" : "Unavailable"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {product.description && (
+                    <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-gray-400 line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
+
+                  {product.specs && (
+                    <div className="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+                      {Object.entries(product.specs)
+                        .filter(([, value]) => value)
+                        .map(([key, value]) => (
+                          <div
+                            key={key}
+                            className="bg-gray-900 border border-gray-700 rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs"
+                          >
+                            <p className="text-gray-500 capitalize text-[10px] sm:text-xs">
+                              {key.replace(/([A-Z])/g, " $1")}
+                            </p>
+                            <p className="font-medium text-white truncate">
+                              {value}
+                            </p>
+                          </div>
+                        ))}
+                    </div>
+                  )}
                 </div>
               </div>
-
-              {product.description && (
-                <p className="mt-3 sm:mt-4 text-xs sm:text-sm text-text-secondary line-clamp-2">
-                  {product.description}
-                </p>
-              )}
-
-              {product.specs && (
-                <div className="mt-3 sm:mt-4 grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
-                  {Object.entries(product.specs)
-                    .filter(([, value]) => value)
-                    .map(([key, value]) => (
-                      <div
-                        key={key}
-                        className="bg-bg border border-border rounded-lg px-2 sm:px-3 py-1.5 sm:py-2 text-xs"
-                      >
-                        <p className="text-text-secondary capitalize text-[10px] sm:text-xs">
-                          {key.replace(/([A-Z])/g, " $1")}
-                        </p>
-                        <p className="font-medium text-text-primary truncate">
-                          {value}
-                        </p>
-                      </div>
-                    ))}
-                </div>
-              )}
-            </div>
-          </div>
+            </motion.div>
+          ))}
         </motion.div>
-      ))}
-    </motion.div>
-  )
-}
-
+      )
+    }
 
 
 const SearchableSelect = ({ 

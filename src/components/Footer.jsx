@@ -211,15 +211,17 @@ export default function Footer() {
                 <span>+20 123 456 789</span>
               </motion.a>
               
-              <motion.div
-                whileHover={{ x: 5 }}
-                className="flex items-center gap-3 text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm group"
-              >
-                <div className="bg-red-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
-                  <MapPin size={16} />
-                </div>
-                <span>Alexandria, Egypt</span>
-              </motion.div>
+              <a href="https://maps.app.goo.gl/QXgJTC5hjxeLQtiK8" target="_blank" rel="noopener noreferrer">
+                <motion.div
+                  whileHover={{ x: 5 }}
+                  className="flex items-center gap-3 text-slate-50 hover:text-red-400 transition-colors duration-200 text-sm group"
+                >
+                  <div className="bg-red-800 p-2 rounded-lg group-hover:bg-red-600 transition-colors duration-300">
+                    <MapPin size={16} />
+                  </div>
+                  <span>N&Y القاهرة – باب اللوق – مول البستان – الدور الرابع – شركة</span>
+                </motion.div>
+              </a>
             </div>
           </motion.div>
 

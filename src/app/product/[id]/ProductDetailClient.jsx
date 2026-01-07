@@ -6,6 +6,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { FaStar, FaShoppingCart, FaCheck, FaTimes, FaCheckCircle } from "react-icons/fa"
 import { useCart } from "@/src/context/CartContext"
+import ProductInfoSection from "@/src/components/ProductInfo"
 
 export default function ProductDetailClient({ 
   productId, 
@@ -299,7 +300,7 @@ export default function ProductDetailClient({
           </div>
         )}
 
-
+        <ProductInfoSection name={product.name} />
       </div>
     </div>
   )

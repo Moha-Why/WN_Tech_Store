@@ -48,7 +48,7 @@ export default function TechStoreHeader() {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className="sticky top-0 z-50 bg-red-900 border-b-2 border-red-950 shadow-lg shadow-red-900/50 backdrop-blur-sm"
+      className="sticky top-0 z-50 bg-red-900 shadow-lg shadow-red-800/50 backdrop-blur-sm"
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
